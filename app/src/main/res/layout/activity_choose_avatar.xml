@@ -79,6 +79,7 @@
 
         <!-- BUNNY -->
         <LinearLayout
+            android:id="@+id/av1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -91,7 +92,7 @@
             <ImageView
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:src="@drawable/tiger"/>
+                android:src="@drawable/avatar_tiger"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -105,6 +106,7 @@
 
         <!-- BEAR -->
         <LinearLayout
+            android:id="@+id/av2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -117,7 +119,7 @@
             <ImageView
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:src="@drawable/bear"/>
+                android:src="@drawable/avatar_bear"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -131,6 +133,7 @@
 
         <!-- TIGER -->
         <LinearLayout
+            android:id="@+id/av3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -143,7 +146,7 @@
             <ImageView
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:src="@drawable/cat"/>
+                android:src="@drawable/avatar_cat"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -157,6 +160,7 @@
 
         <!-- FOX -->
         <LinearLayout
+            android:id="@+id/av4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -169,7 +173,7 @@
             <ImageView
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:src="@drawable/chick"/>
+                android:src="@drawable/avatar_chick"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -183,6 +187,7 @@
 
         <!-- PANDA -->
         <LinearLayout
+            android:id="@+id/av5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -193,9 +198,10 @@
             android:padding="10dp">
 
             <ImageView
+
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:src="@drawable/lion"/>
+                android:src="@drawable/avatar_lion"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -209,6 +215,7 @@
 
         <!-- FROG -->
         <LinearLayout
+            android:id="@+id/av6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -219,9 +226,10 @@
             android:padding="10dp">
 
             <ImageView
+
                 android:layout_width="65dp"
                 android:layout_height="70dp"
-                android:src="@drawable/pig" />
+                android:src="@drawable/avatar_pig" />
 
             <TextView
                 android:layout_width="wrap_content"
