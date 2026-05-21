@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@drawable/bg_header_gradient">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/bear"
+                    android:background="@drawable/circle_white"
+                    android:padding="8dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your Progress"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SuperBear!"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <!-- LEVEL -->
+                <LinearLayout
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/bg_level"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚡ 2"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="LEVEL"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- MAIN CONTENT -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="-80dp"
+            android:padding="16dp">
+
+            <!-- THỐNG KÊ -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📊 Số liệu thống kê của tôi"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#D32F2F" />
+
+                    <!-- GRID -->
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:columnCount="2">
+
+                        <!-- XP -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_yellow"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="⭐"
+                                android:textSize="30sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="680"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TOTAL XP"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                        <!-- QUIZ -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_blue"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="🎯"
+                                android:textSize="30sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="24"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="QUIZ CORRECT"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                        <!-- MATCH -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_green"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="🧩"
+                                android:textSize="30sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="12"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="MATCHING WINS"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                        <!-- LESSON -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_purple"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="💜"
+                                android:textSize="30sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="48"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LESSONS DONE"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                    </GridLayout>
+
+                    <!-- STREAK -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_streak"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔥 3 Days"
+                            android:textStyle="bold"
+                            android:textSize="30sp"
+                            android:textColor="#FFFFFF" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="STREAK GOING STRONG!"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- HUY HIỆU -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🏆 Huy hiệu của bạn"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Badge mở -->
+                    <LinearLayout
+                        android:layout_width="120dp"
+                        android:layout_height="130dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_badge"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:text="🦸"
+                            android:textSize="40sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Beginner Hero"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Badge khóa -->
+                    <LinearLayout
+                        android:layout_width="120dp"
+                        android:layout_height="130dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_badge_locked"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:alpha="0.5">
+
+                        <TextView
+                            android:text="🐾"
+                            android:textSize="40sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Animal Master"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Badge mở -->
+                    <LinearLayout
+                        android:layout_width="120dp"
+                        android:layout_height="130dp"
+                        android:background="@drawable/bg_badge"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:text="🏆"
+                            android:textSize="40sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Quiz Champion"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

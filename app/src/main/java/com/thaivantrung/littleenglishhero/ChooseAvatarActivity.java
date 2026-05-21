@@ -18,7 +18,7 @@ public class ChooseAvatarActivity extends AppCompatActivity {
     LinearLayout av1, av2, av3, av4, av5, av6;
     EditText edtName;
 
-    int selectedAvatar = R.drawable.avatar_bear;
+    int selectedAvatar = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +38,36 @@ public class ChooseAvatarActivity extends AppCompatActivity {
         findViewById(R.id.btnLetsGo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = edtName.getText().toString();
+
+                String name = edtName.getText().toString().trim();
+
+                // kiểm tra avatar
+                if(selectedAvatar == -1){
+                    edtName.setError(null);
+                    android.widget.Toast.makeText(
+                            ChooseAvatarActivity.this,
+                            "Siêu anh hùng vui lòng chọn ảnh đại diện nhé!",
+                            android.widget.Toast.LENGTH_SHORT
+                    ).show();
+                    return;
+                }
+
+                // kiểm tra tên
+                if(name.isEmpty()){
+                    edtName.setError("Biệt danh của siêu anh hùng là gì?");
+                    edtName.requestFocus();
+                    return;
+                }
 
                 Intent intent = new Intent(
                         ChooseAvatarActivity.this,
                         MainMenuActivity.class
                 );
 
-                intent.putExtra("name",name);
-                intent.putExtra("avatar",selectedAvatar);
+                intent.putExtra("name", name);
+                intent.putExtra("avatar", selectedAvatar);
 
                 startActivity(intent);
-
             }
         });
     }

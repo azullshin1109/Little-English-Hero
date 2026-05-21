@@ -32,28 +32,25 @@ public class LearnActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
 
-        // Lesson 1
-        list.add(new LessonModel(R.drawable.img_abc, "Bài học 1", "Bảng Chữ Cái", "8 bài tập"
-        ));
 
         // Lesson 2
-        list.add(new LessonModel(R.drawable.img_animals, "Bài học 2", "Động Vật", "8 bài tập"
+        list.add(new LessonModel(R.drawable.img_animals, "Bài học 1", "Động Vật", "8 bài tập"
         ));
 
         // Lesson 3
-        list.add(new LessonModel(R.drawable.img_fruits, "Bài học 3", "Trái Cây", "9 bài tập"
+        list.add(new LessonModel(R.drawable.img_fruits, "Bài học 2", "Trái Cây", "7 bài tập"
         ));
 
         // Lesson 4
-        list.add(new LessonModel(R.drawable.img_family, "Bài học 4", "Gia Đình", "7 bài tập"
+        list.add(new LessonModel(R.drawable.img_family, "Bài học 3", "Gia Đình", "7 bài tập"
         ));
 
         // Lesson 5
-        list.add(new LessonModel(R.drawable.img_color, "Bài học 5", "Màu Sắc", "11 bài tập"
+        list.add(new LessonModel(R.drawable.img_color, "Bài học 4", "Màu Sắc", "7 bài tập"
         ));
 
         // Lesson 6
-        list.add(new LessonModel(R.drawable.img_number, "Bài học 6", "Các Con Số", "12 bài tập"
+        list.add(new LessonModel(R.drawable.img_number, "Bài học 5", "Các Con Số", "10 bài tập"
         ));
 
         adapter = new LessonAdapter(this, list);

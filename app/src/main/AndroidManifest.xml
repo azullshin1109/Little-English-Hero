@@ -12,9 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LittleEnglishHero">
         <activity
-            android:name=".LearnActivity"
+            android:name=".ScoreActivity"
             android:exported="false" />
-        <!-- MAIN MENU -->
+        <activity
+            android:name=".StudyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LearnActivity"
+            android:exported="false" /> <!-- MAIN MENU -->
         <activity
             android:name=".MainMenuActivity"
             android:exported="false" /> <!-- CHOOSE AVATAR -->
