@@ -22,6 +22,8 @@ public class SplashActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash);
 
+        MusicManager.playMusic(this);
+
         // Ánh xạ ImageView
         imgIconSplash = findViewById(R.id.img_icon_splash);
 
