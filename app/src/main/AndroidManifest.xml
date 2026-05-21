@@ -11,30 +11,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LittleEnglishHero">
-
+        <activity
+            android:name=".LearnActivity"
+            android:exported="false" />
         <!-- MAIN MENU -->
         <activity
             android:name=".MainMenuActivity"
-            android:exported="false" />
-
-        <!-- CHOOSE AVATAR -->
+            android:exported="false" /> <!-- CHOOSE AVATAR -->
         <activity
             android:name=".ChooseAvatarActivity"
-            android:exported="false" />
-
-        <!-- SPLASH -->
+            android:exported="false" /> <!-- SPLASH -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
     </application>
 
 </manifest>

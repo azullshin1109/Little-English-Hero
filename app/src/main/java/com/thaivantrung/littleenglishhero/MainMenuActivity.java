@@ -1,7 +1,9 @@
 package com.thaivantrung.littleenglishhero;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -14,6 +16,8 @@ public class MainMenuActivity extends AppCompatActivity {
     TextView txtName;
     ImageView imgAvatar;
 
+    LinearLayout btnLearn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +25,7 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         txtName = findViewById(R.id.txtName);
         imgAvatar = findViewById(R.id.imgAvatar);
-
+        btnLearn = findViewById(R.id.btnLearn);
         String name = getIntent().getStringExtra("name");
         int avatar = getIntent().getIntExtra(
                 "avatar",
@@ -31,6 +35,17 @@ public class MainMenuActivity extends AppCompatActivity {
         txtName.setText(name + "! 🎉");
 
         imgAvatar.setImageResource(avatar);
+
+        // Mở Learn activity
+        btnLearn.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    MainMenuActivity.this,
+                    LearnActivity.class
+            );
+
+            startActivity(intent);
+        });
 
     }
 }
