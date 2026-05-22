@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_splash">
+
+    <!-- TOP BAR -->
+    <LinearLayout
+        android:id="@+id/layoutTop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_avatar_circle"
+            android:padding="10dp"
+            android:src="@drawable/ic_back"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 / 8 Từ vựng"
+                android:textColor="#8A7CA5"
+                android:textStyle="bold"
+                android:textSize="11sp"/>
+
+            <ProgressBar
+                android:id="@+id/progressWord"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:max="8"
+                android:progress="3"
+                android:progressTint="#7ED6A8"
+                android:backgroundTint="#E8DFFF"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- FLASHCARD -->
+    <LinearLayout
+        android:id="@+id/cardFlash"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/bg_edittext"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutTop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- IMAGE -->
+        <ImageView
+            android:id="@+id/imgWord"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:src="@drawable/ic_frog"
+            android:scaleType="fitCenter"/>
+
+        <!-- ENGLISH -->
+        <TextView
+            android:id="@+id/txtEnglish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="FOX"
+            android:textColor="#5A3F8C"
+            android:textSize="38sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/br"/>
+
+        <!-- IPA -->
+        <TextView
+            android:id="@+id/txtIPA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/fɒks/"
+            android:textColor="#9B8DB8"
+            android:textSize="16sp"/>
+
+        <!-- MEANING -->
+        <TextView
+            android:id="@+id/txtMeaning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_meaning"
+            android:paddingStart="18dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="8dp"
+            android:text="Con Cáo"
+            android:textColor="#C15588"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <!-- AUDIO BUTTON -->
+    <LinearLayout
+        android:id="@+id/layoutAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/cardFlash"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- SPEAK -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/btnSpeak"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/bg_avatar_circle"
+                android:backgroundTint="#70BCF6"
+                android:padding="16dp"
+                android:src="@drawable/ic_volume"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Nghe"
+                android:textColor="#8A7CA5"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- SPACE -->
+        <Space
+            android:layout_width="50dp"
+            android:layout_height="1dp"/>
+
+        <!-- MIC -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/btnMic"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/bg_avatar_circle"
+                android:backgroundTint="#F782A8"
+                android:padding="16dp"
+                android:src="@drawable/ic_mic"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Nói"
+                android:textColor="#8A7CA5"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- NEXT BUTTON -->
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="#8E72FF"
+        android:text="Tiếp tục"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/br"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

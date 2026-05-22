@@ -1,6 +1,7 @@
 package com.thaivantrung.littleenglishhero;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder>{
+
     Context context;
-    ArrayList <LessonModel> list;
+    ArrayList<LessonModel> list;
 
     public LessonAdapter(Context context, ArrayList<LessonModel> list) {
         this.context = context;
@@ -24,12 +26,16 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     @NonNull
     @Override
     public LessonAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_lesson, parent, false);
+
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_lesson, parent, false);
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull LessonAdapter.ViewHolder holder, int position) {
+
         LessonModel lesson = list.get(position);
 
         holder.imgLesson.setImageResource(
@@ -47,6 +53,19 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         holder.txtActivity.setText(
                 lesson.getActivity()
         );
+
+        // CLICK ITEM
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(context, StudyActivity.class);
+
+            // gửi dữ liệu qua Study
+            intent.putExtra("lessonTitle", lesson.getTitle());
+
+            context.startActivity(intent);
+
+        });
+
     }
 
     @Override
