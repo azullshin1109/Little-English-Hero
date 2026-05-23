@@ -6,11 +6,14 @@ public class LessonModel {
     private String title;
     private String activity;
 
-    public LessonModel(int image, String lesson, String title, String activity) {
+    private int lessonId;
+
+    public LessonModel(int image, String lesson, String title, String activity, int lessonid) {
         this.image = image;
         this.lesson = lesson;
         this.title = title;
         this.activity = activity;
+        this.lessonId = lessonid;
     }
 
     public int getImage() {
@@ -27,5 +30,9 @@ public class LessonModel {
 
     public String getActivity() {
         return activity;
+    }
+
+    public int getLessonId() {
+        return lessonId;
     }
 }

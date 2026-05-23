@@ -1,10 +1,13 @@
 package com.thaivantrung.littleenglishhero;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -38,6 +41,40 @@ public class DBHelper extends SQLiteOpenHelper {
         insertData(db);
     }
 
+    public ArrayList<VocabularyModel> getVocabularyByLesson(int lessonId){
+        ArrayList<VocabularyModel> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM Vocabulary WHERE lessonId = ?",
+                new String[]{String.valueOf(lessonId)}
+        );
+
+        if(cursor.moveToFirst()){
+
+            do{
+
+                list.add(
+                        new VocabularyModel(
+                                cursor.getInt(0),
+                                cursor.getInt(1),
+                                cursor.getString(2),
+                                cursor.getString(3),
+                                cursor.getString(4)
+                        )
+                );
+
+            } while(cursor.moveToNext());
+
+        }
+
+        cursor.close();
+
+        return list;
+
+    }
+
+
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -56,11 +93,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Dog','Con chó','img_dog')");
         db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Cat','Con mèo','img_cat')");
         db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Tiger','Con hổ','img_tiger')");
-        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Lion','Con gà','img_chicken')");
-        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Lion','Con heo','img_pig')");
+        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Chicken','Con gà','img_chicken')");
+        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Pig','Con heo','img_pig')");
         db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Lion','Sư tử','img_lion')");
-        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Lion','Con vịt','img_duck')");
-        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Lion','Con bò','img_cow')");
+        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Duck','Con vịt','img_duck')");
+        db.execSQL("INSERT INTO Vocabulary VALUES(null,1,'Cow','Con bò','img_cow')");
 
         // FRUITS
         db.execSQL("INSERT INTO Vocabulary VALUES(null,2,'Apple','Quả Táo','img_apple')");

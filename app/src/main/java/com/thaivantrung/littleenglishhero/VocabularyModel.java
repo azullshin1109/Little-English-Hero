@@ -2,14 +2,31 @@ package com.thaivantrung.littleenglishhero;
 
 public class VocabularyModel {
 
-    private String word;
-    private String meaning;
-    private String image;
+    int id;
+    int lessonId;
 
-    public VocabularyModel(String word, String meaning, String image) {
+    String word;
+    String meaning;
+    String image;
+
+    public VocabularyModel(int id, int lessonId,
+                           String word,
+                           String meaning,
+                           String image) {
+
+        this.id = id;
+        this.lessonId = lessonId;
         this.word = word;
         this.meaning = meaning;
         this.image = image;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getLessonId() {
+        return lessonId;
     }
 
     public String getWord() {
@@ -23,5 +40,4 @@ public class VocabularyModel {
     public String getImage() {
         return image;
     }
-
 }

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/screen_image_quiz"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pink_bg"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="28dp"
+        android:clipChildren="false">
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- TOP BAR (Pink)                            -->
+        <!-- ══════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/top_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_avatar_normal"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Back Button -->
+            <ImageButton
+                android:id="@+id/btn_back_image"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="@drawable/bg_avatar_circle"
+                android:backgroundTint="#EDE7FF"
+                android:contentDescription="Quay lại"
+                android:padding="8dp"
+                android:src="@drawable/ic_back"
+                android:scaleType="fitCenter" />
+
+
+            <!-- Progress Section -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_question_count"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Câu 3 / 10"
+                        android:textColor="@color/purple_main"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_progress_pct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="30%"
+                        android:textColor="@color/purple_main"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_quiz"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:layout_marginTop="4dp"
+                    android:max="100"
+                    android:progress="30"
+                    android:progressDrawable="@drawable/progress_bar_purple" />
+            </LinearLayout>
+
+            <!-- Hearts -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- QUESTION PROMPT LABEL                     -->
+        <!-- ══════════════════════════════════════════ -->
+        <TextView
+            android:id="@+id/tv_question_prompt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/fr_fredoka"
+            android:gravity="center"
+            android:textColor="@color/pink_deep"
+            android:textSize="20sp"
+            android:letterSpacing="0.02"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_bar" />
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- IMAGE CARD                                -->
+        <!-- ══════════════════════════════════════════ -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/image_card"
+            android:layout_width="0dp"
+            android:layout_height="210dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="36dp"
+            app:cardElevation="10dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_question_prompt">
+
+            <!-- Gradient background -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_image_card">
+
+                <!-- Main image / emoji — float animation set in code -->
+                <ImageView
+                    android:id="@+id/tv_question_image"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Hình ảnh câu hỏi"
+                    android:src="@drawable/ic_frog"
+                    android:textSize="110sp" />
+
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <GridLayout
+            android:id="@+id/answers_grid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="14dp"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:useDefaultMargins="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_card">
+
+            <!-- Answer 1: Dog ✅ CORRECT -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white">
+
+                <Button
+                    android:id="@+id/btn_answer_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_answer_btn_pink"
+                    android:gravity="center"
+                    android:tag="correct"
+                    android:text="Dog"
+                    android:textColor="@color/pink_deep"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Answer 2: Cat ❌ WRONG -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white">
+
+                <Button
+                    android:id="@+id/btn_answer_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_answer_btn_pink"
+                    android:gravity="center"
+                    android:tag="wrong"
+                    android:text="Cat"
+                    android:textColor="@color/pink_deep"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Answer 3: Tiger ❌ WRONG -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white">
+
+                <Button
+                    android:id="@+id/btn_answer_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_answer_btn_pink"
+                    android:gravity="center"
+                    android:tag="wrong"
+                    android:text="Tiger"
+                    android:textColor="@color/pink_deep"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Answer 4: Lion  WRONG -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white">
+
+                <Button
+                    android:id="@+id/btn_answer_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_answer_btn_pink"
+                    android:gravity="center"
+                    android:tag="wrong"
+                    android:text="Lion"
+                    android:textColor="@color/pink_deep"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null" />
+            </androidx.cardview.widget.CardView>
+        </GridLayout>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- FEEDBACK PANEL (GONE → VISIBLE từ code)   -->
+        <!-- ══════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/feedback_panel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_feedback_correct"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/answers_grid"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_feedback_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chính xác!"
+                    android:textColor="@color/correct"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_feedback_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Đây là con chó!"
+                    android:textColor="@color/text_body"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- CONTINUE BUTTON (GONE → VISIBLE từ code)  -->
+        <!-- ══════════════════════════════════════════ -->
+        <Button
+            android:id="@+id/btn_continue"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_btn_continue_pink"
+            android:elevation="6dp"
+            android:text="Câu tiếp theo ➜"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"
+            android:stateListAnimator="@null"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feedback_panel"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

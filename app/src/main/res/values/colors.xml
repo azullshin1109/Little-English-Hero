@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <color name="purple_deep">#3D1A8E</color>
+    <color name="purple_main">#7C4DFF</color>
+    <color name="purple_mid">#A37AFF</color>
+    <color name="purple_light">#C9B8FF</color>
+    <color name="purple_pale">#EDE7FF</color>
+    <color name="purple_bg">#F3EFFE</color>
+    <!--  Pink Theme  -->
+    <color name="pink_deep">#880E4F</color>
+    <color name="pink_main">#E91E8C</color>
+    <color name="pink_mid">#F06292</color>
+    <color name="pink_light">#FFB3D9</color>
+    <color name="pink_pale">#FFD6EA</color>
+    <color name="pink_bg">#FFF0F8</color>
+    <!--  Accent  -->
+    <color name="teal">#00BCD4</color>
+    <color name="teal_light">#B2EBF2</color>
+    <color name="gold">#FFD740</color>
+    <color name="orange">#FF6D00</color>
+    <color name="orange_pale">#FFF3E0</color>
+    <color name="heart_red">#FF4081</color>
+    <!--  State Colors  -->
+    <color name="correct">#43A047</color>
+    <color name="correct_bg">#E8F5E9</color>
+    <color name="correct_light">#A5D6A7</color>
+    <color name="wrong">#E53935</color>
+    <color name="wrong_bg">#FFEBEE</color>
+    <color name="wrong_light">#EF9A9A</color>
+    <!--  Neutral  -->
+    <color name="white">#FFFFFF</color>
+    <color name="text_dark">#1A1A2E</color>
+    <color name="text_muted">#9E9E9E</color>
+    <color name="text_body">#555555</color>
+    <color name="xp_gold_text">#5D4037</color>
+    <!--  Blob decorations  -->
+    <color name="blob_purple">#C9B8FF</color>
+    <color name="blob_pink">#FFB3D9</color>
+    <color name="blob_lavender">#CE93D8</color>
+    <color name="blob_pink_2">#F48FB1</color>
+    <color name="blob_teal">#80DEEA</color>
+    <color name="streak_border">#FFCC80</color>
 </resources>

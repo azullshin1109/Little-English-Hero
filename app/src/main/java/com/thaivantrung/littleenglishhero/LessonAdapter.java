@@ -66,6 +66,24 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
 
         });
 
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    context,
+                    StudyActivity.class
+            );
+
+            intent.putExtra(
+                    "lessonId",
+                    lesson.getLessonId()
+            );
+
+            context.startActivity(intent);
+
+        });
+
+
+
     }
 
     @Override

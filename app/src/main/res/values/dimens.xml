@@ -1,0 +1,29 @@
+<resources>
+    <dimen name="radius_sm">12dp</dimen>
+    <dimen name="radius_md">20dp</dimen>
+    <dimen name="radius_lg">28dp</dimen>
+    <dimen name="radius_xl">36dp</dimen>
+    <dimen name="radius_circle">50dp</dimen>
+    <dimen name="top_bar_radius">24dp</dimen>
+    <dimen name="answer_btn_radius">22dp</dimen>
+    <dimen name="question_card_radius">32dp</dimen>
+    <dimen name="feedback_radius">22dp</dimen>
+    <dimen name="continue_btn_radius">30dp</dimen>
+    <dimen name="image_card_radius">36dp</dimen>
+    <dimen name="screen_padding_h">18dp</dimen>
+    <dimen name="top_bar_margin_h">16dp</dimen>
+    <dimen name="answer_btn_height">72dp</dimen>
+    <dimen name="continue_btn_height">58dp</dimen>
+    <dimen name="back_btn_size">38dp</dimen>
+    <dimen name="stripe_height">8dp</dimen>
+    <dimen name="progress_height">12dp</dimen>
+    <dimen name="image_card_height">210dp</dimen>
+    <dimen name="text_word">58sp</dimen>
+    <dimen name="text_mascot">52sp</dimen>
+    <dimen name="text_question_image">110sp</dimen>
+    <dimen name="text_title_screen">20sp</dimen>
+    <dimen name="text_feedback">16sp</dimen>
+    <dimen name="text_answer">16sp</dimen>
+    <dimen name="text_chip">11sp</dimen>
+    <dimen name="text_xp">13sp</dimen>
+</resources>
