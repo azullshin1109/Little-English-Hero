@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "643188807932",
+    "project_id": "little-english-hero",
+    "storage_bucket": "little-english-hero.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643188807932:android:2d931a4e0621ffb4571f79",
+        "android_client_info": {
+          "package_name": "com.thaivantrung.littleenglishhero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643188807932-lci8mhb4o90qrnnb6r227okrgrl66ba9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXBkdIPMvziJkxpduxtJi14-7XcfOUYYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643188807932-lci8mhb4o90qrnnb6r227okrgrl66ba9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

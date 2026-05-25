@@ -77,6 +77,14 @@ public class StudyActivity extends AppCompatActivity {
 
     int currentIndex = 0;
 
+    int scrose = 0;
+    int correctAnswer = 0;
+
+    long startQuizTime;
+    long endQuizTime;
+
+    int totalQuizQuestion = 10;
+
     boolean isImageQuiz = false;
 
     @Override
@@ -254,6 +262,9 @@ public class StudyActivity extends AppCompatActivity {
     // =====================================================
 
     private void showRandomQuiz(){
+        if(currentIndex == 0){
+            startQuizTime = System.currentTimeMillis();
+        }
 
         isImageQuiz = new Random().nextBoolean();
 
@@ -497,9 +508,9 @@ public class StudyActivity extends AppCompatActivity {
                 selectedAnswer.equals(vocab.getWord());
 
         if(isCorrect){
-
+            scrose++;
+            correctAnswer++;
             tvFeedbackTitle.setText("Xuất sắc!");
-
             tvFeedbackSub.setText(
                     vocab.getMeaning()
                             + " = "
@@ -546,7 +557,33 @@ public class StudyActivity extends AppCompatActivity {
 
             } else {
 
+                endQuizTime = System.currentTimeMillis();
+
+                Intent intent =
+                        new Intent(
+                                StudyActivity.this,
+                                ResultActivity.class
+                        );
+
+                intent.putExtra(
+                        "score",
+                        correctAnswer
+                );
+
+                intent.putExtra(
+                        "total",
+                        quizList.size()
+                );
+
+                intent.putExtra(
+                        "time",
+                        endQuizTime - startQuizTime
+                );
+
+                startActivity(intent);
+
                 finish();
+
 
             }
 

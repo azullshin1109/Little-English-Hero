@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Little English Hero</string>
+    <string name="app_name_display">Little English Hero</string>
+    <string name="login_subtitle">Learn English with fun!</string>
+
+    <string name="hint_email">Địa chỉ email của bạn?</string>
+    <string name="hint_password">Mật khẩu?</string>
+
+    <string name="btn_login">Đăng Nhập</string>
+    <string name="btn_create_account">Tạo Tài Khoản</string>
+    <string name="btn_google">Đăng nhập với Google</string>
+
+    <string name="divider_or">hoặc tiếp tục với</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+
+    <string name="mascot_desc">Little English Hero mascot character</string>
+    <string name="toggle_password_desc">Toggle password visibility</string>
 </resources>
