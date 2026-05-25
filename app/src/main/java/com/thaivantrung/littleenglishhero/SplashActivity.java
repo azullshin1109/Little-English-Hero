@@ -15,6 +15,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        MusicManager.playMusic(this);
 
         new Handler().postDelayed(() -> {
 
@@ -46,7 +47,7 @@ public class SplashActivity extends AppCompatActivity {
 
             finish();
 
-        }, 2500);
+        }, 6000);
 
     }
 }

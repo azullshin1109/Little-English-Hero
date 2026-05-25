@@ -11,15 +11,6 @@ public class SoundManager {
         playSound(context, R.raw.sound_button_click);
     }
 
-    // ĐÚNG
-
-    // SAI
-
-    // WIN
-
-    // LEVEL UP
-
-    // HÀM PHÁT CHUNG
     private static void playSound(
             Context context,
             int soundRes

@@ -263,7 +263,7 @@
                         android:layout_height="46dp"
                         android:layout_marginEnd="4dp"
                         android:contentDescription="Sao thứ nhất"
-                        android:src="@drawable/img_star" />
+                        android:src="@drawable/ic_star" />
 
                     <!-- Sao giữa (to hơn) -->
                     <ImageView
@@ -272,7 +272,7 @@
                         android:layout_height="58dp"
                         android:layout_marginEnd="4dp"
                         android:contentDescription="Sao thứ hai"
-                        android:src="@drawable/img_star" />
+                        android:src="@drawable/ic_star" />
 
                     <!-- Sao phải -->
                     <ImageView
@@ -280,7 +280,7 @@
                         android:layout_width="46dp"
                         android:layout_height="46dp"
                         android:contentDescription="Sao thứ ba"
-                        android:src="@drawable/img_star" />
+                        android:src="@drawable/ic_star" />
                 </LinearLayout>
 
                 <!-- Nhãn đánh giá bằng chữ -->

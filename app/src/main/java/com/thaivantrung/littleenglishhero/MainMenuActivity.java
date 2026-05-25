@@ -55,7 +55,7 @@ public class MainMenuActivity extends AppCompatActivity {
                 R.drawable.avatar_bear
         );
 
-        txtName.setText(name + "! 🎉");
+        txtName.setText(name + "!");
 
         imgAvatar.setImageResource(avatar);
 
@@ -66,11 +66,11 @@ public class MainMenuActivity extends AppCompatActivity {
                 LearnActivity.class
         );
 
-        // nếu chưa có activity thì comment tạm
-//        setButtonEffect(
-//                btnScore,
-//                ScoreActivity.class
-//        );
+        setButtonEffect(
+                btnScore,
+                ScoreActivity.class
+        );
+
 
         // SETTINGS POPUP
         btnSettings.setOnClickListener(v -> {
@@ -81,12 +81,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
             showSettingsDialog();
         });
-
-        // nếu chưa có activity thì comment tạm
-//        setButtonEffect(
-//                btnUpdate,
-//                UpdateActivity.class
-//        );
     }
 
     // BUTTON EFFECT + SOUND + CHUYỂN MÀN

@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_splash">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@drawable/bg_top_menu"
+            android:backgroundTint="#FF6872">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/btn_back"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:src="@drawable/ic_back"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:padding="10dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <ImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/avatar_bear"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:padding="8dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your Progress"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loading...."
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <!-- LEVEL -->
+                <LinearLayout
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/bg_level"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="LEVEL"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- MAIN CONTENT -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="-80dp"
+            android:padding="16dp">
+
+            <!-- THỐNG KÊ -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/white"
+                    android:padding="16dp">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số liệu thống kê của tôi"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#D32F2F" />
+
+                    <!-- GRID -->
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:columnCount="2">
+
+                        <!-- XP -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_yellow"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:src="@drawable/ic_star"
+                                android:textSize="30sp"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_total_xp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TOTAL XP"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                        <!-- QUIZ -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_blue"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:src="@drawable/ic_target"
+                                android:textSize="30sp"
+                                android:layout_width="50dp"
+                                android:layout_height="45dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_quiz_correct"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="QUIZ CORRECT"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                        <!-- MATCH -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_green"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:src="@drawable/ic_puzz"
+                                android:textSize="30sp"
+                                android:layout_width="50dp"
+                                android:layout_height="45dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_perfect_quiz"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="PERFECT QUIZ"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                        <!-- LESSON -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/bg_card_purple"
+                            android:elevation="6dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:src="@drawable/ic_book"
+                                android:textSize="30sp"
+                                android:layout_width="50dp"
+                                android:layout_height="45dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_lessons_done"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textStyle="bold"
+                                android:textSize="28sp"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LESSONS DONE"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+                        </LinearLayout>
+
+                    </GridLayout>
+
+                    <!-- STREAK -->
+                    <LinearLayout
+                        android:id="@+id/card_streak"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_streak"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/tv_streak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0 Days"
+                                android:textStyle="bold"
+                                android:textSize="30sp"
+                                android:textColor="#FFFFFF" />
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/ic_fire" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="STREAK GOING STRONG!"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- HUY HIỆU -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_militaly"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Huy hiệu của bạn"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="#212121"/>
+
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Badge mở -->
+                    <LinearLayout
+                        android:id="@+id/badge_family"
+                        android:layout_width="120dp"
+                        android:layout_height="130dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_badge"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:src="@drawable/ic_family"
+                            android:textSize="30sp"
+                            android:layout_width="50dp"
+                            android:layout_height="45dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Family Master"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Badge khóa -->
+                    <LinearLayout
+                        android:id="@+id/badge_animal"
+                        android:layout_width="120dp"
+                        android:layout_height="130dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_badge_locked"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:alpha="0.5">
+
+                        <ImageView
+                            android:src="@drawable/ic_paw"
+                            android:textSize="30sp"
+                            android:layout_width="50dp"
+                            android:layout_height="45dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Animal Master"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                    <!-- Badge mở -->
+                    <LinearLayout
+                        android:id="@+id/badge_quiz"
+                        android:layout_width="120dp"
+                        android:layout_height="130dp"
+                        android:background="@drawable/bg_badge"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:src="@drawable/ic_trophy"
+                            android:textSize="30sp"
+                            android:layout_width="50dp"
+                            android:layout_height="45dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Quiz Champion"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_xp_score"
+                android:padding="18dp">
+
+                <TextView
+                    android:id="@+id/tv_next_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Only 50 XP to Level Up!"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"/>
+
+                <ProgressBar
+                    android:id="@+id/progressXP"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:max="730"
+                    android:progress="680"
+                    android:layout_marginTop="12dp"
+                    android:progressDrawable="@drawable/bg_progress_xp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/tv_level_left"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Level 1"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tv_current_xp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="680 / 730 XP"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tv_level_right"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="Level 3"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

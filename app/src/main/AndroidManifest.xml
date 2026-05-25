@@ -13,12 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LittleEnglishHero">
-
-        <activity
-            android:name=".ResultActivity"
-            android:exported="false" />
         <activity
             android:name=".ScoreActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ResultActivity"
             android:exported="false" />
         <activity
             android:name=".StudyActivity"
