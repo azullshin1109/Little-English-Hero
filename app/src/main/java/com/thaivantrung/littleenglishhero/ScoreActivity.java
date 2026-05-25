@@ -104,16 +104,25 @@ public class ScoreActivity extends AppCompatActivity {
         badgeQuiz = findViewById(R.id.badge_quiz);
     }
     private void loadPlayerInfo() {
-        // NAME
-        String playerName = prefs.getString("player_name", "Little Hero");
-        txtName.setText(playerName);
-        // AVATAR
-        int avatar = prefs.getInt("player_avatar", R.drawable.avatar_bear);
+        String name =
+                prefs.getString(
+                        "player_name",
+                        "Little Hero"
+                );
+
+        int avatar =
+                prefs.getInt(
+                        "player_avatar",
+                        R.drawable.avatar_bear
+                );
+
+        txtName.setText(name + "!");
+
         imgAvatar.setImageResource(avatar);
     }
     // SCORE
     private void loadScoreData() {
-        int xp = prefs.getInt("xp", 0);
+        int xp = prefs.getInt("total_xp", 0);
         int quizCorrect = prefs.getInt("quiz_correct", 0);
         int perfectQuiz = prefs.getInt("perfect_quiz", 0);
         int lessonsDone = prefs.getInt("lessons_done", 0);
@@ -232,14 +241,39 @@ public class ScoreActivity extends AppCompatActivity {
 
         int animalScore =
                 prefs.getInt(
-                        "animal_score",
+                        "animals_score",
                         0
                 );
 
-        int perfectQuiz =
-                prefs.getInt(
-                        "perfect_quiz",
-                        0
+        // PERFECT LESSON
+        boolean familyPerfect =
+                prefs.getBoolean(
+                        "family_perfect",
+                        false
+                );
+
+        boolean animalPerfect =
+                prefs.getBoolean(
+                        "animals_perfect",
+                        false
+                );
+
+        boolean fruitsPerfect =
+                prefs.getBoolean(
+                        "fruits_perfect",
+                        false
+                );
+
+        boolean colorPerfect =
+                prefs.getBoolean(
+                        "colors_perfect",
+                        false
+                );
+
+        boolean jobsPerfect =
+                prefs.getBoolean(
+                        "numbers_perfect",
+                        false
                 );
 
         // FAMILY MASTER
@@ -263,7 +297,13 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
         // QUIZ CHAMPION
-        if(perfectQuiz >= 5) {
+        if(
+                familyPerfect
+                        && animalPerfect
+                        && fruitsPerfect
+                        && colorPerfect
+                        && jobsPerfect
+        ) {
 
             badgeQuiz.setAlpha(1f);
 
@@ -273,16 +313,15 @@ public class ScoreActivity extends AppCompatActivity {
         }
     }
 
-    // =========================
     // ADD XP AFTER QUIZ
-    // =========================
+
     public static void addXP(
             AppCompatActivity activity,
             int addXP,
             boolean perfectQuiz,
             String lessonType,
             int lessonScore
-    ) {
+    ){
 
         SharedPreferences prefs =
                 activity.getSharedPreferences(
@@ -291,8 +330,7 @@ public class ScoreActivity extends AppCompatActivity {
                 );
 
         // CURRENT DATA
-        int xp =
-                prefs.getInt("xp", 0);
+        int xp = prefs.getInt("total_xp", 0);
 
         int quizCorrect =
                 prefs.getInt(
@@ -319,16 +357,58 @@ public class ScoreActivity extends AppCompatActivity {
 
         lessonsDone++;
 
-        if(perfectQuiz) {
-
-            perfect++;
-        }
-
         SharedPreferences.Editor editor =
                 prefs.edit();
 
+        if(perfectQuiz) {
+
+            perfect++;
+
+            // SAVE PERFECT LESSON
+
+            if(lessonType.equals("family")) {
+
+                editor.putBoolean(
+                        "family_perfect",
+                        true
+                );
+            }
+
+            if(lessonType.equals("animals")) {
+
+                editor.putBoolean(
+                        "animals_perfect",
+                        true
+                );
+            }
+
+            if(lessonType.equals("fruits")) {
+
+                editor.putBoolean(
+                        "fruits_perfect",
+                        true
+                );
+            }
+
+            if(lessonType.equals("colors")) {
+
+                editor.putBoolean(
+                        "colors_perfect",
+                        true
+                );
+            }
+
+            if(lessonType.equals("numbers")) {
+
+                editor.putBoolean(
+                        "numbers_perfect",
+                        true
+                );
+            }
+        }
+
         // SAVE
-        editor.putInt("xp", xp);
+        editor.putInt("total_xp", xp);
 
         editor.putInt(
                 "quiz_correct",

@@ -2,6 +2,7 @@ package com.thaivantrung.littleenglishhero;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -59,15 +60,23 @@ public class ChooseAvatarActivity extends AppCompatActivity {
                     return;
                 }
 
+                SharedPreferences prefs =
+                        getSharedPreferences("LEH_DATA", MODE_PRIVATE);
+
+                prefs.edit()
+                        .putString("player_name", name)
+                        .putInt("player_avatar", selectedAvatar)
+                        .apply();
+
                 Intent intent = new Intent(
                         ChooseAvatarActivity.this,
                         MainMenuActivity.class
                 );
 
-                intent.putExtra("name", name);
-                intent.putExtra("avatar", selectedAvatar);
-
                 startActivity(intent);
+
+                finish();
+
             }
         });
     }

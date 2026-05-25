@@ -359,11 +359,11 @@
             app:layout_constraintTop_toBottomOf="@id/answers_grid"
             tools:visibility="visible">
 
-            <TextView
+            <ImageView
                 android:id="@+id/tv_feedback_emoji"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_party"
                 android:textSize="34sp" />
 
             <LinearLayout
@@ -377,7 +377,7 @@
                     android:id="@+id/tv_feedback_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Xuất sắc! "
+                    android:text="Xuất sắc!"
                     android:textColor="@color/correct"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -391,6 +391,19 @@
                     android:textColor="@color/text_body"
                     android:textSize="12sp" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_xp_earned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_xp_earned"
+                android:elevation="3dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="+10 XP"
+                android:textColor="@color/xp_gold_text"
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
 

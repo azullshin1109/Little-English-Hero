@@ -2,6 +2,7 @@ package com.thaivantrung.littleenglishhero;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -26,7 +27,6 @@ import java.util.Locale;
 import java.util.Random;
 
 public class StudyActivity extends AppCompatActivity {
-
     FrameLayout frameContent;
 
     // FLASHCARD
@@ -35,6 +35,8 @@ public class StudyActivity extends AppCompatActivity {
     TextView txtEnglish;
     TextView txtMeaning;
     TextView txtProgress;
+    TextView tvXP;
+    TextView tvXPEarned;
 
     ImageView imgWord;
     ImageView btnSpeak;
@@ -76,38 +78,29 @@ public class StudyActivity extends AppCompatActivity {
     ArrayList<VocabularyModel> quizList;
 
     int currentIndex = 0;
-
+    int currentXP = 0;
+    int earnedSessionXP = 0;
     int scrose = 0;
     int correctAnswer = 0;
-
     long startQuizTime;
     long endQuizTime;
-
     int totalQuizQuestion = 10;
-
     boolean isImageQuiz = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study);
-
+        currentXP = 0;
         frameContent = findViewById(R.id.frameContent);
-
         // DATABASE
         DBHelper dbHelper = new DBHelper(this);
-
-        int lessonId = getIntent().getIntExtra(
-                "lessonId",
-                1
-        );
-
+        int lessonId = getIntent().getIntExtra("lessonId", 1);
         list = dbHelper.getVocabularyByLesson(lessonId);
 
         // RANDOM QUIZ LIST
         quizList = new ArrayList<>(list);
         Collections.shuffle(quizList);
-
         quizList = new ArrayList<>();
         ArrayList<VocabularyModel> tempList = new ArrayList<>(list);
         Collections.shuffle(tempList);
@@ -120,7 +113,6 @@ public class StudyActivity extends AppCompatActivity {
                 }
             }
         }
-
         // FLASHCARD
         showFlashcard();
 
@@ -128,41 +120,27 @@ public class StudyActivity extends AppCompatActivity {
 
         // NEXT
         btnNext.setOnClickListener(v -> {
-
             currentIndex++;
-
             if(currentIndex < list.size()){
-
                 loadWord();
-
             } else {
-
                 currentIndex = 0;
-
                 showRandomQuiz();
-
             }
-
         });
 
         // TEXT TO SPEECH
         textToSpeech = new TextToSpeech(this, status -> {
-
             if(status != TextToSpeech.ERROR){
-
                 textToSpeech.setLanguage(Locale.US);
-
             }
-
         });
 
         // SPEECH
         setupSpeechRecognizer();
 
         // PERMISSION
-        if(ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.RECORD_AUDIO
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO
         ) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(
                     this,
@@ -172,16 +150,9 @@ public class StudyActivity extends AppCompatActivity {
         }
     }
 
-    // =====================================================
     // FLASHCARD
-    // =====================================================
-
     private void showFlashcard(){
-
-        View view = getLayoutInflater().inflate(
-                R.layout.item_flashcard,
-                null
-        );
+        View view = getLayoutInflater().inflate(R.layout.item_flashcard, null);
 
         ImageView btnBack = view.findViewById(R.id.btn_back_flashcard);
         btnBack.setOnClickListener(v -> finish());
@@ -190,39 +161,28 @@ public class StudyActivity extends AppCompatActivity {
 
         txtEnglish = view.findViewById(R.id.txtEnglish);
         txtMeaning = view.findViewById(R.id.txtMeaning);
-
         txtProgress = view.findViewById(R.id.txtProgress);
 
         imgWord = view.findViewById(R.id.imgWord);
 
         btnSpeak = view.findViewById(R.id.btnSpeak);
         btnMic = view.findViewById(R.id.btnMic);
-
         btnNext = view.findViewById(R.id.btnNext);
 
         progressWord = view.findViewById(R.id.progressWord);
-
-
     }
 
     private void loadWord(){
-
         VocabularyModel vocab = list.get(currentIndex);
 
         txtEnglish.setText(vocab.getWord());
-
         txtMeaning.setText(vocab.getMeaning());
 
-        int imageId = getResources().getIdentifier(
-                vocab.getImage(),
-                "drawable",
-                getPackageName()
-        );
+        int imageId = getResources().getIdentifier(vocab.getImage(), "drawable", getPackageName());
 
         imgWord.setImageResource(imageId);
 
         progressWord.setMax(list.size());
-
         progressWord.setProgress(currentIndex + 1);
 
         txtProgress.setText(
@@ -234,65 +194,43 @@ public class StudyActivity extends AppCompatActivity {
 
         // SPEAK
         btnSpeak.setOnClickListener(v -> {
-
             textToSpeech.speak(
                     vocab.getWord(),
                     TextToSpeech.QUEUE_FLUSH,
                     null,
                     null
             );
-
         });
 
         // MIC
         btnMic.setOnClickListener(v -> {
-
             btnMic.clearColorFilter();
-
             speechRecognizer.startListening(
                     speechIntent
             );
-
         });
-
     }
 
-    // =====================================================
     // RANDOM QUIZ
-    // =====================================================
 
     private void showRandomQuiz(){
         if(currentIndex == 0){
             startQuizTime = System.currentTimeMillis();
         }
-
         isImageQuiz = new Random().nextBoolean();
-
         if(isImageQuiz){
-
             showQuizImage();
-
         } else {
-
             showQuizTranslate();
-
         }
-
     }
 
-    // =====================================================
     // QUIZ TRANSLATE
-    // =====================================================
 
     private void showQuizTranslate(){
-
         frameContent.removeAllViews();
 
-        View view = getLayoutInflater().inflate(
-                R.layout.item_quiz_translate,
-                null
-        );
-
+        View view = getLayoutInflater().inflate(R.layout.item_quiz_translate, null);
         ImageView btnBack = view.findViewById(R.id.btn_back_translate);
         btnBack.setOnClickListener(v -> finish());
 
@@ -304,6 +242,8 @@ public class StudyActivity extends AppCompatActivity {
         tvQuestionCount = view.findViewById(R.id.tv_question_count);
         tvProgressPct = view.findViewById(R.id.tv_progress_pct);
         tvSpeechBubble = view.findViewById(R.id.tv_speech_bubble);
+        tvXP = view.findViewById(R.id.tv_xp);
+        tvXP.setText(currentXP + " XP");
 
         btnAnswer1 = view.findViewById(R.id.btn_answer_1);
         btnAnswer2 = view.findViewById(R.id.btn_answer_2);
@@ -312,40 +252,24 @@ public class StudyActivity extends AppCompatActivity {
         btnContinue = view.findViewById(R.id.btn_continue);
 
         feedbackPanel = view.findViewById(R.id.feedback_panel);
-
         progressQuiz = view.findViewById(R.id.progress_quiz);
+        tvXP = view.findViewById(R.id.tv_xp);
+        tvXPEarned = view.findViewById(R.id.tv_xp_earned);
 
         loadQuizTranslate();
-
     }
 
     private void loadQuizTranslate(){
-
-        VocabularyModel vocab =
-                quizList.get(currentIndex);
-
+        VocabularyModel vocab = quizList.get(currentIndex);
         tvQuestionWord.setText(vocab.getMeaning());
-
-        ArrayList<String> answers =
-                new ArrayList<>();
-
+        ArrayList<String> answers = new ArrayList<>();
         answers.add(vocab.getWord());
-
         while(answers.size() < 4){
-
-            VocabularyModel randomVocab =
-                    list.get(
-                            new Random().nextInt(list.size())
-                    );
-
+            VocabularyModel randomVocab = list.get(new Random().nextInt(list.size()));
             if(!answers.contains(randomVocab.getWord())){
-
                 answers.add(randomVocab.getWord());
-
             }
-
         }
-
         Collections.shuffle(answers);
 
         btnAnswer1.setText(answers.get(0));
@@ -378,24 +302,14 @@ public class StudyActivity extends AppCompatActivity {
                 ));
 
         tvSpeechBubble.setText("Chọn nghĩa đúng cho từ này nhé!");
-
         updateQuizProgress();
-
     }
 
-    // =====================================================
     // QUIZ IMAGE
-    // =====================================================
-
     private void showQuizImage(){
 
         frameContent.removeAllViews();
-
-        View view = getLayoutInflater().inflate(
-                R.layout.item_quiz_image,
-                null
-        );
-
+        View view = getLayoutInflater().inflate(R.layout.item_quiz_image, null);
         //btn_back
         ImageView btnBack = view.findViewById(R.id.btn_back_image);
         btnBack.setOnClickListener(v -> finish());
@@ -408,6 +322,9 @@ public class StudyActivity extends AppCompatActivity {
         tvQuestionPrompt = view.findViewById(R.id.tv_question_prompt);
         tvQuestionCount = view.findViewById(R.id.tv_question_count);
         tvProgressPct = view.findViewById(R.id.tv_progress_pct);
+        tvXP = view.findViewById(R.id.tv_xp);
+        tvXPEarned = view.findViewById(R.id.tv_xp_earned);
+        tvXP.setText(currentXP + " XP");
 
         btnAnswer1 = view.findViewById(R.id.btn_answer_1);
         btnAnswer2 = view.findViewById(R.id.btn_answer_2);
@@ -420,14 +337,11 @@ public class StudyActivity extends AppCompatActivity {
         progressQuiz = view.findViewById(R.id.progress_quiz);
 
         loadQuizImage();
-
     }
 
     private void loadQuizImage(){
 
-        VocabularyModel vocab =
-                quizList.get(currentIndex);
-
+        VocabularyModel vocab = quizList.get(currentIndex);
         int imageId = getResources().getIdentifier(
                 vocab.getImage(),
                 "drawable",
@@ -435,27 +349,14 @@ public class StudyActivity extends AppCompatActivity {
         );
 
         tvQuestionImage.setImageResource(imageId);
-
-        ArrayList<String> answers =
-                new ArrayList<>();
-
+        ArrayList<String> answers = new ArrayList<>();
         answers.add(vocab.getWord());
-
         while(answers.size() < 4){
-
-            VocabularyModel randomVocab =
-                    list.get(
-                            new Random().nextInt(list.size())
-                    );
-
+            VocabularyModel randomVocab = list.get(new Random().nextInt(list.size()));
             if(!answers.contains(randomVocab.getWord())){
-
                 answers.add(randomVocab.getWord());
-
             }
-
         }
-
         Collections.shuffle(answers);
 
         btnAnswer1.setText(answers.get(0));
@@ -493,37 +394,38 @@ public class StudyActivity extends AppCompatActivity {
 
     }
 
-    // =====================================================
     // CHECK ANSWER
-    // =====================================================
 
-    private void checkAnswer(String selectedAnswer,
-                             VocabularyModel vocab){
+
+    private void checkAnswer(String selectedAnswer, VocabularyModel vocab){
 
         feedbackPanel.setVisibility(View.VISIBLE);
 
         btnContinue.setVisibility(View.VISIBLE);
 
-        boolean isCorrect =
-                selectedAnswer.equals(vocab.getWord());
+        boolean isCorrect = selectedAnswer.equals(vocab.getWord());
 
         if(isCorrect){
             scrose++;
             correctAnswer++;
+
+            int earnedXP;
+
+            if(isImageQuiz){
+                earnedXP = 15;
+            } else {
+                earnedXP = 10;
+            }
+
+            currentXP += earnedXP;
+            earnedSessionXP += earnedXP;
+            tvXP.setText(currentXP + " XP");
+            tvXPEarned.setText("+" + earnedXP + " XP");
             tvFeedbackTitle.setText("Xuất sắc!");
-            tvFeedbackSub.setText(
-                    vocab.getMeaning()
-                            + " = "
-                            + vocab.getWord()
-            );
 
-            textToSpeech.speak(
-                    "Correct",
-                    TextToSpeech.QUEUE_FLUSH,
-                    null,
-                    null
-            );
+            tvFeedbackSub.setText(vocab.getMeaning() + " = " + vocab.getWord());
 
+            textToSpeech.speak("Correct", TextToSpeech.QUEUE_FLUSH, null, null);
         } else {
 
             tvFeedbackTitle.setText("Sai rồi!");
@@ -533,13 +435,14 @@ public class StudyActivity extends AppCompatActivity {
                             + vocab.getWord()
             );
 
+            tvXPEarned.setText("+0 XP");
+
             textToSpeech.speak(
                     "Wrong answer",
                     TextToSpeech.QUEUE_FLUSH,
                     null,
                     null
             );
-
         }
 
         btnAnswer1.setEnabled(false);
@@ -548,16 +451,21 @@ public class StudyActivity extends AppCompatActivity {
         btnAnswer4.setEnabled(false);
 
         btnContinue.setOnClickListener(v -> {
-
             currentIndex++;
-
             if(currentIndex < quizList.size()){
-
                 showRandomQuiz();
-
             } else {
-
                 endQuizTime = System.currentTimeMillis();
+                boolean isPerfect =
+                        correctAnswer == quizList.size();
+
+                ScoreActivity.addXP(
+                        this,
+                        earnedSessionXP,
+                        isPerfect,
+                        "family",
+                        correctAnswer * 10
+                );
 
                 Intent intent =
                         new Intent(
@@ -584,41 +492,31 @@ public class StudyActivity extends AppCompatActivity {
 
                 finish();
 
-
             }
 
         });
 
     }
 
-    // =====================================================
     // PROGRESS
-    // =====================================================
 
     private void updateQuizProgress(){
 
         progressQuiz.setMax(quizList.size());
-
         progressQuiz.setProgress(currentIndex + 1);
-
-        tvQuestionCount.setText(
-                "Câu "
+        tvQuestionCount.setText("Câu "
                         + (currentIndex + 1)
                         + " / "
                         + quizList.size()
         );
 
-        int percent =
-                (currentIndex + 1) * 100
-                        / quizList.size();
-
+        int percent = (currentIndex + 1) * 100 / quizList.size();
         tvProgressPct.setText(percent + "%");
 
     }
 
-    // =====================================================
+
     // SPEECH RECOGNIZER
-    // =====================================================
 
     private void setupSpeechRecognizer(){
 
@@ -734,9 +632,8 @@ public class StudyActivity extends AppCompatActivity {
 
     }
 
-    // =====================================================
     // MUSIC
-    // =====================================================
+
 
     @Override
     protected void onStart() {
@@ -754,24 +651,19 @@ public class StudyActivity extends AppCompatActivity {
 
     }
 
-    // =====================================================
+
     // DESTROY
-    // =====================================================
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if(speechRecognizer != null){
-
             speechRecognizer.destroy();
-
         }
 
         if(textToSpeech != null){
-
             textToSpeech.stop();
-
             textToSpeech.shutdown();
 
         }

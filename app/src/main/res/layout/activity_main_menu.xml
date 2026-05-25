@@ -270,9 +270,10 @@
             android:background="@drawable/bg_chip"/>
 
         <TextView
+            android:id="@+id/txtLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🏆 Level 2"
+            android:text="Level 2"
             android:textStyle="bold"
             android:textColor="#90A4AE"
             android:padding="10dp"
