@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/background_splash">
+
+    <ImageView
+        android:id="@+id/img_chipchip"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/icon_chipchip_fun" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hoàn thành Bài Học"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="#6C4AB6"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bạn đã sẵn sàng làm Quiz chưa?"
+        android:textSize="16sp"
+        android:textColor="#666666"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnStartQuiz"
+        android:layout_width="250dp"
+        android:layout_height="56dp"
+        android:text="Bắt đầu Quiz"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#00B4D7"
+        android:layout_marginTop="32dp"/>
+
+</LinearLayout>

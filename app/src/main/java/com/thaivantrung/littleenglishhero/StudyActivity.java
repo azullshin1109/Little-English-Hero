@@ -10,6 +10,8 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -50,7 +52,6 @@ public class StudyActivity extends AppCompatActivity {
     TextView tvFeedbackSub;
     TextView tvSpeechBubble;
     TextView tvQuestionPrompt;
-
     ImageView tvQuestionImage;
 
     Button btnAnswer1;
@@ -86,16 +87,19 @@ public class StudyActivity extends AppCompatActivity {
     long endQuizTime;
     int totalQuizQuestion = 10;
     boolean isImageQuiz = false;
+    boolean startQuizOnly = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study);
+
         currentXP = 0;
         frameContent = findViewById(R.id.frameContent);
         // DATABASE
         DBHelper dbHelper = new DBHelper(this);
         int lessonId = getIntent().getIntExtra("lessonId", 1);
+        startQuizOnly = getIntent().getBooleanExtra("startQuizOnly", false);
         list = dbHelper.getVocabularyByLesson(lessonId);
 
         // RANDOM QUIZ LIST
@@ -113,21 +117,26 @@ public class StudyActivity extends AppCompatActivity {
                 }
             }
         }
-        // FLASHCARD
-        showFlashcard();
-
-        loadWord();
+        // START QUIZ ONLY
+        if(startQuizOnly){
+            showRandomQuiz();
+        } else {
+            showFlashcard();
+            loadWord();
+        }
 
         // NEXT
-        btnNext.setOnClickListener(v -> {
-            currentIndex++;
-            if(currentIndex < list.size()){
-                loadWord();
-            } else {
-                currentIndex = 0;
-                showRandomQuiz();
-            }
-        });
+        if(!startQuizOnly){
+            btnNext.setOnClickListener(v -> {
+                currentIndex++;
+                if(currentIndex < list.size()){
+                    loadWord();
+                } else {
+                    currentIndex = 0;
+                    showFinishFlashcard();
+                }
+            });
+        }
 
         // TEXT TO SPEECH
         textToSpeech = new TextToSpeech(this, status -> {
@@ -172,6 +181,20 @@ public class StudyActivity extends AppCompatActivity {
         progressWord = view.findViewById(R.id.progressWord);
     }
 
+    private void showFinishFlashcard(){
+
+        frameContent.removeAllViews();
+
+        View view = getLayoutInflater().inflate(R.layout.view_finish_flashcard, null);
+
+        frameContent.addView(view);
+
+        Button btnStartQuiz = view.findViewById(R.id.btnStartQuiz);
+
+        btnStartQuiz.setOnClickListener(v -> {
+            showRandomQuiz();
+        });
+    }
     private void loadWord(){
         VocabularyModel vocab = list.get(currentIndex);
 
@@ -189,7 +212,7 @@ public class StudyActivity extends AppCompatActivity {
                 (currentIndex + 1)
                         + " / "
                         + list.size()
-                        + " WORDS"
+                        + " Từ"
         );
 
         // SPEAK
@@ -404,6 +427,15 @@ public class StudyActivity extends AppCompatActivity {
         btnContinue.setVisibility(View.VISIBLE);
 
         boolean isCorrect = selectedAnswer.equals(vocab.getWord());
+        // CÂU CUỐI
+        if(currentIndex == quizList.size() - 1){
+
+            btnContinue.setText("Xem kết quả");
+
+        } else {
+
+            btnContinue.setText("Câu tiếp theo ➜");
+        }
 
         if(isCorrect){
             scrose++;
@@ -451,11 +483,12 @@ public class StudyActivity extends AppCompatActivity {
         btnAnswer4.setEnabled(false);
 
         btnContinue.setOnClickListener(v -> {
-            currentIndex++;
-            if(currentIndex < quizList.size()){
-                showRandomQuiz();
-            } else {
+
+            // CÂU CUỐI
+            if(currentIndex == quizList.size() - 1){
+
                 endQuizTime = System.currentTimeMillis();
+
                 boolean isPerfect =
                         correctAnswer == quizList.size();
 
@@ -492,6 +525,12 @@ public class StudyActivity extends AppCompatActivity {
 
                 finish();
 
+            } else {
+
+                // QUA CÂU TIẾP
+                currentIndex++;
+
+                showRandomQuiz();
             }
 
         });

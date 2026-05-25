@@ -96,15 +96,6 @@
             android:textStyle="bold"
             android:fontFamily="@font/br"/>
 
-        <!-- IPA -->
-        <TextView
-            android:id="@+id/txtIPA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="/fɒks/"
-            android:textColor="#9B8DB8"
-            android:textSize="16sp"/>
-
         <!-- MEANING -->
         <TextView
             android:id="@+id/txtMeaning"

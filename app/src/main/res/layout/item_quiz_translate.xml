@@ -6,7 +6,7 @@
     android:id="@+id/screen_translate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_bg"
+    android:background="@drawable/background_splash"
     android:fillViewport="true"
     android:overScrollMode="never"
     android:scrollbars="none">
@@ -216,7 +216,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:fontFamily="@font/fr_fredoka"
+                        android:fontFamily="@font/fr_nutio"
                         android:textStyle="bold"
                         android:text="DOG"
                         android:textColor="@color/purple_deep"

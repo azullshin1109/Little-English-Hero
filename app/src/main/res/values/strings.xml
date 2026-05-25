@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Little English Hero</string>
     <string name="app_name_display">Little English Hero</string>
-    <string name="login_subtitle">Learn English with fun!</string>
+    <string name="login_subtitle">Nhiều điều thú vị đang chờ bạn!</string>
 
     <string name="hint_email">Địa chỉ email của bạn?</string>
     <string name="hint_password">Mật khẩu?</string>

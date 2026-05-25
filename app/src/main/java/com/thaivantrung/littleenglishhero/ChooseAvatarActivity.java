@@ -72,6 +72,9 @@ public class ChooseAvatarActivity extends AppCompatActivity {
                         ChooseAvatarActivity.this,
                         MainMenuActivity.class
                 );
+                intent.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK
+                );
 
                 startActivity(intent);
 

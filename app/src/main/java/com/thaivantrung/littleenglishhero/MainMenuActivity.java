@@ -15,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainMenuActivity extends AppCompatActivity {
@@ -31,6 +32,19 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main_menu);
+        getOnBackPressedDispatcher().addCallback(
+                this,
+                new OnBackPressedCallback(true) {
+
+                    @Override
+                    public void handleOnBackPressed() {
+
+                        finishAffinity();
+
+                    }
+
+                }
+        );
 
         txtName = findViewById(R.id.txtName);
         txtXP = findViewById(R.id.txtXP);
@@ -88,7 +102,6 @@ public class MainMenuActivity extends AppCompatActivity {
             showSettingsDialog();
         });
     }
-
     // BUTTON EFFECT + SOUND + CHUYỂN MÀN
     private void setButtonEffect(
             LinearLayout button,
@@ -211,4 +224,5 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onResume();
         loadPlayerProgress();
     }
+
 }

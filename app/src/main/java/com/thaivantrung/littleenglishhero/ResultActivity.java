@@ -2,6 +2,8 @@ package com.thaivantrung.littleenglishhero;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +29,8 @@ public class ResultActivity extends AppCompatActivity {
     ImageView ivStar1;
     ImageView ivStar2;
     ImageView ivStar3;
+    ImageView imgTrophy;
+    ImageView imgConfettiLeft, imgConfettiRight;
 
     CardView cardReplay;
     CardView cardAnotherLesson;
@@ -36,47 +40,37 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        // =========================
-        // FIND VIEW
-        // =========================
+        imgTrophy = findViewById(R.id.iv_trophy);
+        imgConfettiRight = findViewById(R.id.tv_confetti_right);
+        imgConfettiLeft = findViewById(R.id.tv_confetti_left);
 
+        Animation trophyAnim = AnimationUtils.loadAnimation(this, R.anim.snake_anim);
+        Animation rotateAnim = AnimationUtils.loadAnimation(this, R.anim.rotate_anim);
+
+        imgTrophy.startAnimation(rotateAnim);
+        imgConfettiRight.startAnimation(trophyAnim);
+        imgConfettiLeft.startAnimation(trophyAnim);
+        // FIND VIEW
         tvScoreCurrent = findViewById(R.id.tv_score_current);
         tvScoreTotal = findViewById(R.id.tv_score_total);
-
-        tvStatAccuracyValue =
-                findViewById(R.id.tv_stat_accuracy_value);
-
-        tvStatTimeValue =
-                findViewById(R.id.tv_stat_time_value);
-
-        tvRatingText =
-                findViewById(R.id.tv_rating_text);
-
-        tvTitleExcellent =
-                findViewById(R.id.tv_title_excellent);
-
-        tvSubtitle =
-                findViewById(R.id.tv_subtitle);
-
-        tvMascotCheer =
-                findViewById(R.id.tv_mascot_cheer);
-
-        tvMascotMessage =
-                findViewById(R.id.tv_mascot_message);
+        tvStatAccuracyValue = findViewById(R.id.tv_stat_accuracy_value);
+        tvStatTimeValue = findViewById(R.id.tv_stat_time_value);
+        tvRatingText = findViewById(R.id.tv_rating_text);
+        tvTitleExcellent = findViewById(R.id.tv_title_excellent);
+        tvSubtitle = findViewById(R.id.tv_subtitle);
+        tvMascotCheer = findViewById(R.id.tv_mascot_cheer);
+        tvMascotMessage = findViewById(R.id.tv_mascot_message);
 
         ivStar1 = findViewById(R.id.iv_star_1);
         ivStar2 = findViewById(R.id.iv_star_2);
         ivStar3 = findViewById(R.id.iv_star_3);
 
-        cardReplay =
-                findViewById(R.id.cardView_btn_replay);
+        cardReplay = findViewById(R.id.cardView_btn_replay);
 
-        cardAnotherLesson =
-                findViewById(R.id.cardView_btn_next_lesson);
+        cardAnotherLesson = findViewById(R.id.cardView_btn_next_lesson);
 
-        // =========================
         // GET DATA
-        // =========================
+
 
         int score =
                 getIntent().getIntExtra(
@@ -243,51 +237,21 @@ public class ResultActivity extends AppCompatActivity {
 
         }
 
-        // =========================
-        // REPLAY
-        // =========================
-
+        // CHOI LAI
         cardReplay.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            ResultActivity.this,
-                            StudyActivity.class
-                    );
-
-            intent.putExtra(
-                    "lessonId",
-                    lessonId
-            );
-
+            Intent intent =new Intent(ResultActivity.this, StudyActivity.class);
+            intent.putExtra("lessonId", lessonId);
+            intent.putExtra("startQuizOnly", true);
             startActivity(intent);
-
             finish();
-
         });
 
-        // =========================
-        // ANOTHER LESSON
-        // =========================
-
+        // BAI HOC KHAC
         cardAnotherLesson.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            ResultActivity.this,
-                            MainActivity.class
-                    );
-
-            intent.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP
-            );
-
+            Intent intent = new Intent(ResultActivity.this, LearnActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-
             finish();
-
         });
-
     }
-
 }

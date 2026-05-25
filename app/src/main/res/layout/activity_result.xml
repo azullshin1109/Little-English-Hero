@@ -104,7 +104,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_trophy" />
 
-        <!-- Tiêu đề phụ -->
         <TextView
             android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
@@ -114,7 +113,8 @@
             android:gravity="center"
             android:letterSpacing="0.01"
             android:text="Bé đã hoàn thành bài học rồi!"
-            android:textColor="#F2DBFF"
+            android:textColor="#F7AA16"
+            android:textStyle="bold"
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -296,7 +296,7 @@
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
                     android:text="Siêu xuất sắc!"
-                    android:textColor="#7B2D8B"
+                    android:textColor="#E55B00"
                     android:textSize="13sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -345,13 +345,13 @@
                             android:paddingTop="14dp"
                             android:paddingBottom="14dp">
 
-                            <TextView
+                            <ImageView
                                 android:id="@+id/tv_stat_time_icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
                                 android:contentDescription="@null"
                                 android:importantForAccessibility="no"
-                                android:text="⏱️"
+                                android:src="@drawable/ic_clock_bb"
                                 android:textSize="26sp" />
 
                             <TextView
@@ -395,13 +395,13 @@
                             android:paddingTop="14dp"
                             android:paddingBottom="14dp">
 
-                            <TextView
+                            <ImageView
                                 android:id="@+id/tv_stat_accuracy_icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
                                 android:contentDescription="@null"
                                 android:importantForAccessibility="no"
-                                android:text="🎯"
+                                android:src="@drawable/ic_target"
                                 android:textSize="26sp" />
 
                             <TextView
@@ -501,6 +501,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/fr_nutio"
                             android:text="Giỏi quá!"
+                            android:textStyle="bold"
                             android:textColor="#F4A261"
                             android:textSize="17sp" />
 
@@ -513,6 +514,7 @@
                             android:fontFamily="@font/fr_nutio"
                             android:lineSpacingExtra="3dp"
                             android:text="Bé học rất chăm chỉ!\nHãy tiếp tục nhé!"
+                            android:textStyle="bold"
                             android:textColor="#888888"
                             android:textSize="13sp" />
                     </LinearLayout>
