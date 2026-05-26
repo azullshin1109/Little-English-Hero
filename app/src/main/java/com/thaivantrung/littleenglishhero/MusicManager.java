@@ -37,12 +37,15 @@ public class MusicManager {
         }
     }
 
-    // tắt hẳn
     public static void stopMusic() {
-
         if (mediaPlayer != null) {
-
-            mediaPlayer.stop();
+            try {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             mediaPlayer.release();
             mediaPlayer = null;
         }

@@ -14,6 +14,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ChooseAvatarActivity extends AppCompatActivity {
 
     LinearLayout av1, av2, av3, av4, av5, av6;
@@ -35,14 +41,17 @@ public class ChooseAvatarActivity extends AppCompatActivity {
         av6 = findViewById(R.id.av6);
 
         edtName = findViewById(R.id.edtName);
+
+        // GỌI HÀM NÀY ĐỂ LẮNG NGHE SỰ KIỆN CHỌN AVATAR
         avatarClick();
+
         findViewById(R.id.btnLetsGo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String name = edtName.getText().toString().trim();
 
-                // kiểm tra avatar
+                // 1. Kiểm tra avatar
                 if(selectedAvatar == -1){
                     edtName.setError(null);
                     android.widget.Toast.makeText(
@@ -53,36 +62,56 @@ public class ChooseAvatarActivity extends AppCompatActivity {
                     return;
                 }
 
-                // kiểm tra tên
+                // 2. Kiểm tra tên
                 if(name.isEmpty()){
                     edtName.setError("Biệt danh của siêu anh hùng là gì?");
                     edtName.requestFocus();
                     return;
                 }
 
-                SharedPreferences prefs =
-                        getSharedPreferences("LEH_DATA", MODE_PRIVATE);
-
+                // 3. Lưu vào SharedPreferences (Cục bộ)
+                SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
                 prefs.edit()
                         .putString("player_name", name)
                         .putInt("player_avatar", selectedAvatar)
                         .apply();
 
-                Intent intent = new Intent(
-                        ChooseAvatarActivity.this,
-                        MainMenuActivity.class
-                );
-                intent.addFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK
-                );
+                // 4. Lưu dữ liệu lên Firestore (Đám mây)
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                startActivity(intent);
+                    Map<String, Object> userProfile = new HashMap<>();
+                    userProfile.put("name", name);
+                    userProfile.put("avatar", selectedAvatar);
+                    userProfile.put("total_xp", 0);
 
-                finish();
-
+                    db.collection("users").document(uid)
+                            .set(userProfile)
+                            .addOnSuccessListener(aVoid -> {
+                                Intent intent = new Intent(ChooseAvatarActivity.this, MainMenuActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                android.widget.Toast.makeText(
+                                        ChooseAvatarActivity.this,
+                                        "Lỗi lưu dữ liệu: " + e.getMessage(),
+                                        android.widget.Toast.LENGTH_SHORT
+                                ).show();
+                            });
+                } else {
+                    android.widget.Toast.makeText(
+                            ChooseAvatarActivity.this,
+                            "Lỗi: Chưa đăng nhập tài khoản!",
+                            android.widget.Toast.LENGTH_SHORT
+                    ).show();
+                }
             }
         });
-    }
+    } // <-- ĐÃ THÊM DẤU NGOẶC ĐÓNG HÀM onCreate() TẠI ĐÂY
+
     private void avatarClick(){
 
         av1.setOnClickListener(v -> {

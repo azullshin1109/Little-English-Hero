@@ -140,7 +140,7 @@ public class ScoreActivity extends AppCompatActivity {
         tvLevel.setText(String.valueOf(level));
 
         // LEVEL TEXT
-        tvNextLevel.setText("Only " + needXP + " XP to Level Up!");
+        tvNextLevel.setText("Cần " + needXP + " để lên Nâng cấp!");
         tvCurrentXP.setText(currentXP + " / 100 XP");
         tvLevelLeft.setText("Level " + level);
         tvLevelRight.setText("Level " + (level + 1));
@@ -313,8 +313,9 @@ public class ScoreActivity extends AppCompatActivity {
         }
     }
 
-    // ADD XP AFTER QUIZ
 
+    // ADD XP AFTER QUIZ
+    // ADD XP AFTER QUIZ
     public static void addXP(
             AppCompatActivity activity,
             int addXP,
@@ -323,139 +324,84 @@ public class ScoreActivity extends AppCompatActivity {
             int lessonScore
     ){
 
-        SharedPreferences prefs =
-                activity.getSharedPreferences(
-                        "LEH_DATA",
-                        MODE_PRIVATE
-                );
+        SharedPreferences prefs = activity.getSharedPreferences("LEH_DATA", MODE_PRIVATE);
 
         // CURRENT DATA
         int xp = prefs.getInt("total_xp", 0);
-
-        int quizCorrect =
-                prefs.getInt(
-                        "quiz_correct",
-                        0
-                );
-
-        int perfect =
-                prefs.getInt(
-                        "perfect_quiz",
-                        0
-                );
-
-        int lessonsDone =
-                prefs.getInt(
-                        "lessons_done",
-                        0
-                );
+        int quizCorrect = prefs.getInt("quiz_correct", 0);
+        int perfect = prefs.getInt("perfect_quiz", 0);
+        int lessonsDone = prefs.getInt("lessons_done", 0);
 
         // ADD
         xp += addXP;
-
         quizCorrect++;
-
         lessonsDone++;
 
-        SharedPreferences.Editor editor =
-                prefs.edit();
+        SharedPreferences.Editor editor = prefs.edit();
 
         if(perfectQuiz) {
-
             perfect++;
-
             // SAVE PERFECT LESSON
-
-            if(lessonType.equals("family")) {
-
-                editor.putBoolean(
-                        "family_perfect",
-                        true
-                );
-            }
-
-            if(lessonType.equals("animals")) {
-
-                editor.putBoolean(
-                        "animals_perfect",
-                        true
-                );
-            }
-
-            if(lessonType.equals("fruits")) {
-
-                editor.putBoolean(
-                        "fruits_perfect",
-                        true
-                );
-            }
-
-            if(lessonType.equals("colors")) {
-
-                editor.putBoolean(
-                        "colors_perfect",
-                        true
-                );
-            }
-
-            if(lessonType.equals("numbers")) {
-
-                editor.putBoolean(
-                        "numbers_perfect",
-                        true
-                );
-            }
+            if(lessonType.equals("family")) editor.putBoolean("family_perfect", true);
+            if(lessonType.equals("animals")) editor.putBoolean("animals_perfect", true);
+            if(lessonType.equals("fruits")) editor.putBoolean("fruits_perfect", true);
+            if(lessonType.equals("colors")) editor.putBoolean("colors_perfect", true);
+            if(lessonType.equals("numbers")) editor.putBoolean("numbers_perfect", true);
         }
 
         // SAVE
         editor.putInt("total_xp", xp);
-
-        editor.putInt(
-                "quiz_correct",
-                quizCorrect
-        );
-
-        editor.putInt(
-                "perfect_quiz",
-                perfect
-        );
-
-        editor.putInt(
-                "lessons_done",
-                lessonsDone
-        );
+        editor.putInt("quiz_correct", quizCorrect);
+        editor.putInt("perfect_quiz", perfect);
+        editor.putInt("lessons_done", lessonsDone);
 
         // SAVE LESSON SCORE
         if(lessonType.equals("family")) {
-
-            editor.putInt(
-                    "family_score",
-                    lessonScore
-            );
+            editor.putInt("family_score", lessonScore);
         }
-
-        if(lessonType.equals("animal")) {
-
-            editor.putInt(
-                    "animal_score",
-                    lessonScore
-            );
+        if(lessonType.equals("animals")) { // Đã sửa từ "animal" thành "animals" cho đồng bộ với checkBadge
+            editor.putInt("animals_score", lessonScore);
         }
 
         // SAVE STREAK DATE
-        String today =
-                new SimpleDateFormat(
-                        "dd/MM/yyyy",
-                        Locale.getDefault()
-                ).format(
-                        Calendar.getInstance().getTime()
-                );
+        String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Calendar.getInstance().getTime());
+        editor.putString("last_study_date", today);
 
-        editor.putString(
-                "last_study_date",
-                today
-        );
-
+        // Áp dụng lưu cục bộ
         editor.apply();
+
+        // ==========================================
+        // SYNC LÊN FIRESTORE (ĐÁM MÂY)
+        // ==========================================
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+            com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+
+            java.util.Map<String, Object> progressData = new java.util.HashMap<>();
+
+            // Thông tin cơ bản
+            progressData.put("total_xp", prefs.getInt("total_xp", 0));
+            progressData.put("quiz_correct", prefs.getInt("quiz_correct", 0));
+            progressData.put("perfect_quiz", prefs.getInt("perfect_quiz", 0));
+            progressData.put("lessons_done", prefs.getInt("lessons_done", 0));
+            progressData.put("streak", prefs.getInt("streak", 0));
+            progressData.put("last_study_date", prefs.getString("last_study_date", ""));
+
+            // Điểm chủ đề
+            progressData.put("family_score", prefs.getInt("family_score", 0));
+            progressData.put("animals_score", prefs.getInt("animals_score", 0));
+
+            // Huy hiệu hoàn hảo (Badge)
+            progressData.put("family_perfect", prefs.getBoolean("family_perfect", false));
+            progressData.put("animals_perfect", prefs.getBoolean("animals_perfect", false));
+            progressData.put("fruits_perfect", prefs.getBoolean("fruits_perfect", false));
+            progressData.put("colors_perfect", prefs.getBoolean("colors_perfect", false));
+            progressData.put("numbers_perfect", prefs.getBoolean("numbers_perfect", false));
+
+            // Dùng SetOptions.merge() để cập nhật dữ liệu mà không làm mất name hay avatar đã có
+            db.collection("users").document(uid)
+                    .set(progressData, com.google.firebase.firestore.SetOptions.merge());
+        }
     }
 }

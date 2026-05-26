@@ -8,8 +8,6 @@
     android:background="@drawable/background_splash"
     tools:context=".MainMenuActivity">
 
-    <!-- TOP HEADER -->
-
     <!-- TITLE -->
     <LinearLayout
         android:id="@+id/layoutTop"
@@ -158,7 +156,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Learn / Quiz"
+                android:text="Học / Chơi"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:textSize="24sp"
@@ -185,7 +183,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Score"
+                android:text="Thành tựu"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:textSize="24sp"
@@ -212,7 +210,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="Cài Đặt"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:textSize="22sp"
@@ -260,9 +258,10 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
+            android:id="@+id/txtStreak"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔥 Day 3 streak!"
+            android:text=" 3 streak!"
             android:textStyle="bold"
             android:textColor="#90A4AE"
             android:padding="10dp"

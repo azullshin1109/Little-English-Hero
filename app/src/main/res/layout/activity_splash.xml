@@ -101,12 +101,11 @@
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="220dp"
-        android:layout_height="14dp"
+        android:layout_height="16dp"
         android:layout_marginTop="12dp"
-        android:progress="70"
-        android:progressTint="#FFD54F"
-        android:progressBackgroundTint="#FFFFFF"
-
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/bg_custom_progressbar"
         app:layout_constraintTop_toBottomOf="@id/txtLoading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

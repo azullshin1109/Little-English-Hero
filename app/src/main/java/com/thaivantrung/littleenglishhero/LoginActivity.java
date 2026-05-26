@@ -1,6 +1,7 @@
 package com.thaivantrung.littleenglishhero;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -204,24 +205,63 @@ public class LoginActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
 
-                    if(documentSnapshot.exists()) {
+                    if (documentSnapshot.exists()) {
 
-                        // ĐÃ CÓ PROFILE
-                        startActivity(
-                                new Intent(this,
-                                        MainMenuActivity.class)
-                        );
+                        SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+
+                        // 1. Lấy thông tin cơ bản
+                        String name = documentSnapshot.getString("name");
+                        Long avatarLong = documentSnapshot.getLong("avatar");
+                        int avatar = (avatarLong != null) ? avatarLong.intValue() : R.drawable.avatar_bear;
+
+                        // 2. Lấy các chỉ số XP và Score (xử lý an toàn tránh Null)
+                        Long xp = documentSnapshot.getLong("total_xp");
+                        Long quiz = documentSnapshot.getLong("quiz_correct");
+                        Long perf = documentSnapshot.getLong("perfect_quiz");
+                        Long lesson = documentSnapshot.getLong("lessons_done");
+                        Long streak = documentSnapshot.getLong("streak");
+
+                        Long famScore = documentSnapshot.getLong("family_score");
+                        Long aniScore = documentSnapshot.getLong("animals_score");
+
+                        // 3. Lấy Badge (Boolean)
+                        Boolean famPerf = documentSnapshot.getBoolean("family_perfect");
+                        Boolean aniPerf = documentSnapshot.getBoolean("animals_perfect");
+                        Boolean fruPerf = documentSnapshot.getBoolean("fruits_perfect");
+                        Boolean colPerf = documentSnapshot.getBoolean("colors_perfect");
+                        Boolean numPerf = documentSnapshot.getBoolean("numbers_perfect");
+
+                        // 4. Lưu toàn bộ vào SharedPreferences
+                        editor.putString("player_name", (name != null && !name.isEmpty()) ? name : "Little Hero")
+                                .putInt("player_avatar", avatar)
+                                .putInt("total_xp", (xp != null) ? xp.intValue() : 0)
+                                .putInt("quiz_correct", (quiz != null) ? quiz.intValue() : 0)
+                                .putInt("perfect_quiz", (perf != null) ? perf.intValue() : 0)
+                                .putInt("lessons_done", (lesson != null) ? lesson.intValue() : 0)
+                                .putInt("streak", (streak != null) ? streak.intValue() : 0)
+                                .putInt("family_score", (famScore != null) ? famScore.intValue() : 0)
+                                .putInt("animals_score", (aniScore != null) ? aniScore.intValue() : 0)
+                                .putBoolean("family_perfect", famPerf != null && famPerf)
+                                .putBoolean("animals_perfect", aniPerf != null && aniPerf)
+                                .putBoolean("fruits_perfect", fruPerf != null && fruPerf)
+                                .putBoolean("colors_perfect", colPerf != null && colPerf)
+                                .putBoolean("numbers_perfect", numPerf != null && numPerf);
+
+                        String lastDate = documentSnapshot.getString("last_study_date");
+                        if (lastDate != null) editor.putString("last_study_date", lastDate);
+
+                        editor.apply();
+
+                        // Chuyển sang màn hình chính
+                        startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
+                        finish();
 
                     } else {
-
-                        // CHƯA CÓ PROFILE
-                        startActivity(
-                                new Intent(this,
-                                        ChooseAvatarActivity.class)
-                        );
+                        // CHƯA CÓ PROFILE -> Chuyển sang màn hình chọn Avatar
+                        startActivity(new Intent(LoginActivity.this, ChooseAvatarActivity.class));
+                        finish();
                     }
-
-                    finish();
                 });
     }
 }

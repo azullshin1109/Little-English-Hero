@@ -9,14 +9,11 @@
     android:background="@drawable/bg_settings_dialog">
 
     <!-- HEADER -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
-
-        <!-- TEXT -->
 
         <LinearLayout
             android:layout_width="0dp"
@@ -27,14 +24,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SETTINGS"
+                android:text="SETTING"
                 android:fontFamily="@font/font_pressstart"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="#FF8C42"/>
         </LinearLayout>
-
-        <!-- IMAGE -->
 
         <ImageView
             android:layout_width="85dp"
@@ -44,49 +39,14 @@
             android:layout_marginStart="10dp"/>
     </LinearLayout>
 
-    <!-- MUSIC -->
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Music Volume"
-        android:textStyle="bold"
-
-        android:textColor="#444444"
-        android:textSize="16sp"
-        android:layout_marginTop="18dp"/>
-
-    <!-- EFFECT -->
-
-    <SeekBar
-        android:id="@+id/seekMusic"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Effect Volume"
-        android:textStyle="bold"
-        android:textColor="#444444"
-        android:textSize="16sp"
-        android:layout_marginTop="12dp"/>
-
-    <SeekBar
-        android:id="@+id/seekEffect"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-
     <!-- SWITCHES -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="10dp">
 
+        <!-- MUSIC -->
         <Switch
             android:id="@+id/switchMusic"
             android:layout_width="wrap_content"
@@ -96,6 +56,7 @@
             android:textColor="#555555"
             android:checked="true"/>
 
+        <!-- EFFECT -->
         <Switch
             android:id="@+id/switchEffect"
             android:layout_width="wrap_content"
@@ -106,8 +67,19 @@
             android:checked="true"/>
     </LinearLayout>
 
-    <!-- CLOSE BUTTON -->
+    <!-- LOGOUT BUTTON -->
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="ĐĂNG XUẤT"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#E53935"
+        android:layout_marginTop="18dp"/>
 
+    <!-- CLOSE BUTTON -->
     <Button
         android:id="@+id/btnClose"
         android:layout_width="match_parent"
@@ -117,6 +89,6 @@
         android:textSize="17sp"
         android:textColor="@android:color/white"
         android:backgroundTint="#FF8C42"
-        android:layout_marginTop="22dp"/>
+        android:layout_marginTop="12dp"/>
 
 </LinearLayout>

@@ -18,6 +18,8 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainMenuActivity extends AppCompatActivity {
     TextView txtName;
     ImageView imgAvatar;
@@ -26,29 +28,27 @@ public class MainMenuActivity extends AppCompatActivity {
     TextView txtLevel;
     LinearLayout btnLearn, btnScore, btnSettings, btnUpdate;
     Animation scaleAnimation;
+    TextView txtStreak;
+    boolean isLoggingOut = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main_menu);
-        getOnBackPressedDispatcher().addCallback(
-                this,
-                new OnBackPressedCallback(true) {
-
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-
                         finishAffinity();
-
                     }
-
                 }
         );
 
         txtName = findViewById(R.id.txtName);
         txtXP = findViewById(R.id.txtXP);
         txtLevel = findViewById(R.id.txtLevel);
+        txtStreak = findViewById(R.id.txtStreak);
 
         imgAvatar = findViewById(R.id.imgAvatar);
 
@@ -65,124 +65,124 @@ public class MainMenuActivity extends AppCompatActivity {
         // data
         SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
 
-        String name = prefs.getString(
-                        "player_name",
-                        "Little Hero"
-                );
+        String name = prefs.getString("player_name", "Little Hero");
 
-        int avatar = prefs.getInt(
-                        "player_avatar",
-                        R.drawable.avatar_bear
-                );
+        int avatar = prefs.getInt("player_avatar", R.drawable.avatar_bear);
 
         txtName.setText(name + "!");
         imgAvatar.setImageResource(avatar);
         loadPlayerProgress();
 
         // BUTTON EFFECTS
+        setButtonEffect(btnLearn, LearnActivity.class);
 
-        setButtonEffect(
-                btnLearn,
-                LearnActivity.class
-        );
-
-        setButtonEffect(
-                btnScore,
-                ScoreActivity.class
-        );
+        setButtonEffect(btnScore, ScoreActivity.class);
 
 
-        // SETTINGS POPUP
+        // Cài Đặt Popup
         btnSettings.setOnClickListener(v -> {
-
             v.startAnimation(scaleAnimation);
-
             SoundManager.playClick(this);
-
             showSettingsDialog();
         });
     }
+
     // BUTTON EFFECT + SOUND + CHUYỂN MÀN
     private void setButtonEffect(
             LinearLayout button,
             Class<?> targetActivity
     ) {
-
         button.setOnClickListener(v -> {
-
             // animation
             v.startAnimation(scaleAnimation);
-
             // sound
             SoundManager.playClick(this);
-
             // delay nhẹ cho mượt
             v.postDelayed(() -> {
-
-                Intent intent = new Intent(
-                        MainMenuActivity.this,
-                        targetActivity
-                );
-
+                Intent intent = new Intent(MainMenuActivity.this, targetActivity);
                 startActivity(intent);
-
             }, 150);
         });
     }
 
     // SETTINGS POPUP
+    // SETTINGS POPUP
     private void showSettingsDialog() {
-
         Dialog dialog = new Dialog(this);
-
         dialog.setContentView(R.layout.dialog_settings);
 
-        // ánh xạ
-        SeekBar seekMusic =
-                dialog.findViewById(R.id.seekMusic);
+        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        SeekBar seekEffect =
-                dialog.findViewById(R.id.seekEffect);
+        SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
 
-        Switch switchMusic =
-                dialog.findViewById(R.id.switchMusic);
+        Switch switchMusic = dialog.findViewById(R.id.switchMusic);
+        Switch switchEffect = dialog.findViewById(R.id.switchEffect);
+        Button btnLogout = dialog.findViewById(R.id.btnLogout);
+        Button btnClose = dialog.findViewById(R.id.btnClose);
 
-        Switch switchEffect =
-                dialog.findViewById(R.id.switchEffect);
+        // ===== MUSIC STATE =====
+        boolean isMusicOn = prefs.getBoolean("music_on", true);
+        switchMusic.setOnCheckedChangeListener(null);
+        switchMusic.setChecked(isMusicOn);
+        switchMusic.setText(isMusicOn ? "Music ON" : "Music OFF");
 
-        Button btnClose =
-                dialog.findViewById(R.id.btnClose);
+        switchMusic.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor.putBoolean("music_on", isChecked);
+            editor.apply();
+            switchMusic.setText(isChecked ? "Music ON" : "Music OFF");
+            if (isChecked) {
+                MusicManager.resumeMusic();
+            } else {
+                MusicManager.pauseMusic();
+            }
+        });
 
-        // volume mặc định
-        seekMusic.setProgress(40);
-        seekEffect.setProgress(40);
+        // ===== EFFECT STATE =====
+        boolean isEffectOn = prefs.getBoolean("effect_on", true);
+        switchEffect.setChecked(isEffectOn);
+        switchEffect.setText(isEffectOn ? "Effect ON" : "Effect OFF");
+        SoundManager.setEffectOn(isEffectOn);
+        switchEffect.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor.putBoolean("effect_on", isChecked);
+            editor.apply();
+            switchEffect.setText(isChecked ? "Effect ON" : "Effect OFF");
+            SoundManager.setEffectOn(isChecked);
+        });
 
-        // bật tắt music
-        switchMusic.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> {
+        // ===== LOGOUT BUTTON =====
+        btnLogout.setOnClickListener(v -> {
+            isLoggingOut = true;
+            // 1. Đăng xuất Firebase
+            FirebaseAuth.getInstance().signOut();
 
-                    if (isChecked) {
+            // 3. FIX LỖI MẤT NHẠC: Giữ lại cấu hình Settings trước khi clear data
+            boolean currentMusic = prefs.getBoolean("music_on", true);
+            boolean currentEffect = prefs.getBoolean("effect_on", true);
 
-                        MusicManager.resumeMusic();
+            editor.clear(); // Xóa data tiến độ (XP, name, avatar...)
+            editor.putBoolean("music_on", currentMusic); // Ghi lại cấu hình nhạc
+            editor.putBoolean("effect_on", currentEffect);
+            editor.apply();
 
-                    } else {
+            // Bỏ dòng MusicManager.stopMusic() nếu bạn muốn màn hình Login vẫn có nhạc nền.
 
-                        MusicManager.pauseMusic();
-                    }
-                });
+            Intent intent = new Intent(MainMenuActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            dialog.dismiss();
+        });
 
-        // close popup
+        // ===== CLOSE BUTTON =====
         btnClose.setOnClickListener(v -> {
-
             SoundManager.playClick(this);
-
             dialog.dismiss();
         });
 
         dialog.show();
     }
 
-    private void loadPlayerProgress(){
+    private void loadPlayerProgress() {
 
         SharedPreferences prefs =
                 getSharedPreferences(
@@ -193,6 +193,11 @@ public class MainMenuActivity extends AppCompatActivity {
         int totalXP =
                 prefs.getInt(
                         "total_xp",
+                        0
+                );
+        int streak =
+                prefs.getInt(
+                        "streak",
                         0
                 );
 
@@ -218,11 +223,22 @@ public class MainMenuActivity extends AppCompatActivity {
                 "Level " + level
         );
 
+        txtStreak.setText("Day " + streak + " streak!");
+
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         loadPlayerProgress();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!isLoggingOut) {
+            MusicManager.stopMusic();
+        }
+
+    }
 }
