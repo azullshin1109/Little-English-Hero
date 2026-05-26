@@ -7,7 +7,6 @@ public class SoundManager {
 
     private static boolean isEffectOn = true;
 
-    // set trạng thái từ Settings
     public static void setEffectOn(boolean on) {
         isEffectOn = on;
     }
@@ -16,6 +15,18 @@ public class SoundManager {
     public static void playClick(Context context) {
         if (!isEffectOn) return;
         playSound(context, R.raw.sound_button_click);
+    }
+
+    // ÂM THANH TRẢ LỜI ĐÚNG
+    public static void playCorrect(Context context) {
+        if (!isEffectOn) return;
+        playSound(context, R.raw.sound_victory);
+    }
+
+    // ÂM THANH TRẢ LỜI SAI
+    public static void playWrong(Context context) {
+        if (!isEffectOn) return;
+        playSound(context, R.raw.sound_wrong);
     }
 
     private static void playSound(Context context, int soundRes) {

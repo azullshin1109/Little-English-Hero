@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,9 +22,7 @@ import com.google.firebase.auth.*;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
-
     EditText etEmail, etPassword;
-
     Button btnLogin;
     Button btnCreate;
     Button btnGoogle;
@@ -31,6 +30,9 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore db;
     ImageView imgMascost;
+    TextView tvForgotPassword;
+    ImageView ivTogglePassword;
+    boolean isPasswordVisible = false;
 
     GoogleSignInClient googleClient;
 
@@ -47,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
 
+        tvForgotPassword = findViewById(R.id.tv_forgot_password);
+        ivTogglePassword = findViewById(R.id.iv_toggle_password);
+
         btnLogin = findViewById(R.id.btn_login);
         btnCreate = findViewById(R.id.btn_create_account);
         btnGoogle = findViewById(R.id.btn_google_signin);
@@ -59,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInOptions gso =
                 new GoogleSignInOptions.Builder(
                         GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
                         .requestEmail()
                         .build();
 
@@ -66,6 +72,34 @@ public class LoginActivity extends AppCompatActivity {
 
         // LOGIN
         btnLogin.setOnClickListener(v -> loginUser());
+
+        ivTogglePassword.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                etPassword.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
+                ivTogglePassword.setImageResource(R.drawable.ic_eye_shut_one);
+            } else {
+                etPassword.setTransformationMethod(android.text.method.HideReturnsTransformationMethod.getInstance());
+                ivTogglePassword.setImageResource(R.drawable.ic_eye_open);
+            }
+            isPasswordVisible = !isPasswordVisible;
+            etPassword.setSelection(etPassword.getText().length());
+        });
+        tvForgotPassword.setOnClickListener(v -> {
+            String email = etEmail.getText().toString().trim();
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập email của bạn vào ô trên để khôi phục mật khẩu", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            auth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(this, "Đã gửi hướng dẫn khôi phục vào email: " + email, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "Lỗi: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
 
         // REGISTER
         btnCreate.setOnClickListener(v -> registerUser());
@@ -85,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(email.isEmpty() || pass.isEmpty()) {
             Toast.makeText(this,
-                    "Please enter email and password",
+                    "Vui lòng nhập email và mật khẩu",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -96,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(task.isSuccessful()) {
 
                         Toast.makeText(this,
-                                "Login success",
+                                "Đăng nhập thành công",
                                 Toast.LENGTH_SHORT).show();
 
                         checkUser();
@@ -118,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if(email.isEmpty() || pass.isEmpty()) {
             Toast.makeText(this,
-                    "Please enter email and password",
+                    "Vui lòng nhập email và mật khẩu",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -129,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(task.isSuccessful()) {
 
                         Toast.makeText(this,
-                                "Register success",
+                                "Đăng kí thành công",
                                 Toast.LENGTH_SHORT).show();
 
                         checkUser();
@@ -145,25 +179,17 @@ public class LoginActivity extends AppCompatActivity {
 
     // GOOGLE RESULT
     @Override
-    protected void onActivityResult(int requestCode,
-                                    int resultCode,
-                                    @Nullable Intent data) {
-
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 100) {
-
-            Task<GoogleSignInAccount> task =
-                    GoogleSignIn.getSignedInAccountFromIntent(data);
-
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-
-                GoogleSignInAccount account =
-                        task.getResult(ApiException.class);
-
+                GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account.getIdToken());
-
-            } catch (Exception e) {
+            } catch (ApiException e) {
+                // HIỂN THỊ MÃ LỖI ĐỂ BIẾT CHÍNH XÁC NGUYÊN NHÂN
+                Toast.makeText(this, "Lỗi Google Sign-In: " + e.getStatusCode(), Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -181,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(task.isSuccessful()) {
 
                         Toast.makeText(this,
-                                "Google Login Success",
+                                "Đăng nhập Google thành công",
                                 Toast.LENGTH_SHORT).show();
 
                         checkUser();
@@ -189,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
 
                         Toast.makeText(this,
-                                "Google Login Failed",
+                                "Đăng nhập Google thất bại",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

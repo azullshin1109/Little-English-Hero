@@ -50,7 +50,7 @@
                     android:id="@+id/txtGreeting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Good Morning ☀️"
+                    android:text="Xin chào"
                     android:textColor="#4A9EC4"
                     android:textSize="15sp"
                     android:textStyle="bold" />

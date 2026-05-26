@@ -196,6 +196,7 @@ public class StudyActivity extends AppCompatActivity {
         });
     }
     private void loadWord(){
+        btnMic.clearColorFilter();
         VocabularyModel vocab = list.get(currentIndex);
 
         txtEnglish.setText(vocab.getWord());
@@ -208,15 +209,10 @@ public class StudyActivity extends AppCompatActivity {
         progressWord.setMax(list.size());
         progressWord.setProgress(currentIndex + 1);
 
-        txtProgress.setText(
-                (currentIndex + 1)
-                        + " / "
-                        + list.size()
-                        + " Từ"
-        );
-
+        txtProgress.setText((currentIndex + 1) + " / " + list.size() + " Từ" );
         // SPEAK
         btnSpeak.setOnClickListener(v -> {
+            textToSpeech.setLanguage(Locale.US);
             textToSpeech.speak(
                     vocab.getWord(),
                     TextToSpeech.QUEUE_FLUSH,
@@ -283,6 +279,9 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void loadQuizTranslate(){
+        // GỌI HÀM RESET MÀU NÚT
+        resetAnswerButtons();
+
         VocabularyModel vocab = quizList.get(currentIndex);
         tvQuestionWord.setText(vocab.getMeaning());
         ArrayList<String> answers = new ArrayList<>();
@@ -302,25 +301,25 @@ public class StudyActivity extends AppCompatActivity {
 
         btnAnswer1.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer1.getText().toString(),
+                        btnAnswer1,
                         vocab
                 ));
 
         btnAnswer2.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer2.getText().toString(),
+                        btnAnswer2,
                         vocab
                 ));
 
         btnAnswer3.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer3.getText().toString(),
+                        btnAnswer3,
                         vocab
                 ));
 
         btnAnswer4.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer4.getText().toString(),
+                        btnAnswer4,
                         vocab
                 ));
 
@@ -363,6 +362,8 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void loadQuizImage(){
+        // GỌI HÀM RESET MÀU NÚT
+        resetAnswerButtons();
 
         VocabularyModel vocab = quizList.get(currentIndex);
         int imageId = getResources().getIdentifier(
@@ -389,25 +390,25 @@ public class StudyActivity extends AppCompatActivity {
 
         btnAnswer1.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer1.getText().toString(),
+                        btnAnswer1,
                         vocab
                 ));
 
         btnAnswer2.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer2.getText().toString(),
+                        btnAnswer2,
                         vocab
                 ));
 
         btnAnswer3.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer3.getText().toString(),
+                        btnAnswer3,
                         vocab
                 ));
 
         btnAnswer4.setOnClickListener(v ->
                 checkAnswer(
-                        btnAnswer4.getText().toString(),
+                        btnAnswer4,
                         vocab
                 ));
 
@@ -417,136 +418,105 @@ public class StudyActivity extends AppCompatActivity {
 
     }
 
+    private void resetAnswerButtons() {
+        btnAnswer1.setBackgroundResource(R.drawable.selector_answer_btn_pink);
+        btnAnswer2.setBackgroundResource(R.drawable.selector_answer_btn_pink);
+        btnAnswer3.setBackgroundResource(R.drawable.selector_answer_btn_pink);
+        btnAnswer4.setBackgroundResource(R.drawable.selector_answer_btn_pink);
+
+        btnAnswer1.setEnabled(true);
+        btnAnswer2.setEnabled(true);
+        btnAnswer3.setEnabled(true);
+        btnAnswer4.setEnabled(true);
+
+        feedbackPanel.setVisibility(View.GONE);
+        btnContinue.setVisibility(View.GONE);
+    }
+
     // CHECK ANSWER
+    private void checkAnswer(Button selectedBtn, VocabularyModel vocab) {
 
-
-    private void checkAnswer(String selectedAnswer, VocabularyModel vocab){
-
-        feedbackPanel.setVisibility(View.VISIBLE);
-
-        btnContinue.setVisibility(View.VISIBLE);
-
+        String selectedAnswer = selectedBtn.getText().toString();
         boolean isCorrect = selectedAnswer.equals(vocab.getWord());
-        // CÂU CUỐI
-        if(currentIndex == quizList.size() - 1){
-
-            btnContinue.setText("Xem kết quả");
-
-        } else {
-
-            btnContinue.setText("Câu tiếp theo ➜");
-        }
-
-        if(isCorrect){
-            scrose++;
-            correctAnswer++;
-
-            int earnedXP;
-
-            if(isImageQuiz){
-                earnedXP = 15;
-            } else {
-                earnedXP = 10;
-            }
-
-            currentXP += earnedXP;
-            earnedSessionXP += earnedXP;
-            tvXP.setText(currentXP + " XP");
-            tvXPEarned.setText("+" + earnedXP + " XP");
-            tvFeedbackTitle.setText("Xuất sắc!");
-
-            tvFeedbackSub.setText(vocab.getMeaning() + " = " + vocab.getWord());
-
-            textToSpeech.speak("Correct", TextToSpeech.QUEUE_FLUSH, null, null);
-        } else {
-
-            tvFeedbackTitle.setText("Sai rồi!");
-
-            tvFeedbackSub.setText(
-                    "Đáp án đúng là "
-                            + vocab.getWord()
-            );
-
-            tvXPEarned.setText("+0 XP");
-
-            textToSpeech.speak(
-                    "Wrong answer",
-                    TextToSpeech.QUEUE_FLUSH,
-                    null,
-                    null
-            );
-        }
 
         btnAnswer1.setEnabled(false);
         btnAnswer2.setEnabled(false);
         btnAnswer3.setEnabled(false);
         btnAnswer4.setEnabled(false);
 
+        feedbackPanel.setVisibility(View.VISIBLE);
+        btnContinue.setVisibility(View.VISIBLE);
+
+        if(currentIndex == quizList.size() - 1){
+            btnContinue.setText("Xem kết quả");
+        } else {
+            btnContinue.setText("Câu tiếp theo ➜");
+        }
+
+        if(isCorrect){
+            selectedBtn.setBackgroundResource(R.drawable.bg_avatar_selected);
+
+            scrose++;
+            correctAnswer++;
+            int earnedXP = isImageQuiz ? 15 : 10;
+
+            currentXP += earnedXP;
+            earnedSessionXP += earnedXP;
+            tvXP.setText(currentXP + " XP");
+            tvXPEarned.setText("+" + earnedXP + " XP");
+
+            tvFeedbackTitle.setText("Xuất sắc!");
+            tvFeedbackTitle.setTextColor(getResources().getColor(R.color.correct));
+            feedbackPanel.setBackgroundResource(R.drawable.bg_feedback_correct);
+            tvFeedbackSub.setText(vocab.getMeaning() + " = " + vocab.getWord());
+
+            SoundManager.playCorrect(this);
+        } else {
+            selectedBtn.setBackgroundResource(R.drawable.bg_btn_wrong);
+            if (btnAnswer1.getText().toString().equals(vocab.getWord())) btnAnswer1.setBackgroundResource(R.drawable.bg_avatar_selected);
+            if (btnAnswer2.getText().toString().equals(vocab.getWord())) btnAnswer2.setBackgroundResource(R.drawable.bg_avatar_selected);
+            if (btnAnswer3.getText().toString().equals(vocab.getWord())) btnAnswer3.setBackgroundResource(R.drawable.bg_avatar_selected);
+            if (btnAnswer4.getText().toString().equals(vocab.getWord())) btnAnswer4.setBackgroundResource(R.drawable.bg_avatar_selected);
+
+            tvFeedbackTitle.setText("Sai rồi!");
+            tvFeedbackTitle.setTextColor(android.graphics.Color.RED);
+            feedbackPanel.setBackgroundResource(R.drawable.bg_btn_wrong);
+            tvFeedbackSub.setText("Đáp án đúng là " + vocab.getWord());
+            tvXPEarned.setText("+0 XP");
+
+            SoundManager.playWrong(this);
+        }
+
         btnContinue.setOnClickListener(v -> {
+            SoundManager.playClick(this);
 
-            // CÂU CUỐI
             if(currentIndex == quizList.size() - 1){
-
                 endQuizTime = System.currentTimeMillis();
+                boolean isPerfect = correctAnswer == quizList.size();
+                ScoreActivity.addXP(this, earnedSessionXP, isPerfect, "family", correctAnswer * 10);
 
-                boolean isPerfect =
-                        correctAnswer == quizList.size();
-
-                ScoreActivity.addXP(
-                        this,
-                        earnedSessionXP,
-                        isPerfect,
-                        "family",
-                        correctAnswer * 10
-                );
-
-                Intent intent =
-                        new Intent(
-                                StudyActivity.this,
-                                ResultActivity.class
-                        );
-
-                intent.putExtra(
-                        "score",
-                        correctAnswer
-                );
-
-                intent.putExtra(
-                        "total",
-                        quizList.size()
-                );
-
-                intent.putExtra(
-                        "time",
-                        endQuizTime - startQuizTime
-                );
-
+                Intent intent = new Intent(StudyActivity.this, ResultActivity.class);
+                intent.putExtra("score", correctAnswer);
+                intent.putExtra("total", quizList.size());
+                intent.putExtra("time", endQuizTime - startQuizTime);
                 startActivity(intent);
-
                 finish();
-
             } else {
-
-                // QUA CÂU TIẾP
                 currentIndex++;
-
                 showRandomQuiz();
             }
-
         });
-
     }
 
     // PROGRESS
-
     private void updateQuizProgress(){
 
         progressQuiz.setMax(quizList.size());
         progressQuiz.setProgress(currentIndex + 1);
         tvQuestionCount.setText("Câu "
-                        + (currentIndex + 1)
-                        + " / "
-                        + quizList.size()
+                + (currentIndex + 1)
+                + " / "
+                + quizList.size()
         );
 
         int percent = (currentIndex + 1) * 100 / quizList.size();
@@ -558,106 +528,52 @@ public class StudyActivity extends AppCompatActivity {
     // SPEECH RECOGNIZER
 
     private void setupSpeechRecognizer(){
-
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-
-        speechIntent = new Intent(
-                RecognizerIntent.ACTION_RECOGNIZE_SPEECH
-        );
+        speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
         speechIntent.putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         );
 
-        speechIntent.putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE,
-                "en-US"
-        );
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
 
         speechRecognizer.setRecognitionListener(
                 new RecognitionListener() {
-
                     @Override
                     public void onReadyForSpeech(Bundle params) {
-
                         btnMic.setColorFilter(
                                 android.graphics.Color.YELLOW
                         );
-
                     }
 
                     @Override
                     public void onResults(Bundle results) {
-
-                        ArrayList<String> data =
-                                results.getStringArrayList(
-                                        SpeechRecognizer.RESULTS_RECOGNITION
-                                );
-
+                        ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                         if(data != null && data.size() > 0){
-
-                            String answer = list.get(currentIndex)
-                                    .getWord()
-                                    .toLowerCase();
-
+                            String answer = list.get(currentIndex).getWord().toLowerCase();
                             boolean isCorrect = false;
-
                             for(String text : data){
-
-                                String spokenText =
-                                        text.toLowerCase();
-
-                                if(spokenText.equals(answer)
-                                        || spokenText.contains(answer)){
-
+                                String spokenText = text.toLowerCase();
+                                if(spokenText.equals(answer) || spokenText.contains(answer)){
                                     isCorrect = true;
-
                                     break;
-
                                 }
-
                             }
 
                             if(isCorrect){
-
-                                btnMic.setColorFilter(
-                                        android.graphics.Color.GREEN
-                                );
-
-                                textToSpeech.speak(
-                                        "Correct",
-                                        TextToSpeech.QUEUE_FLUSH,
-                                        null,
-                                        null
-                                );
-
+                                btnMic.setColorFilter(android.graphics.Color.GREEN);
+                                SoundManager.playCorrect(StudyActivity.this);
                             } else {
-
-                                btnMic.setColorFilter(
-                                        android.graphics.Color.RED
-                                );
-
-                                textToSpeech.speak(
-                                        "Try again",
-                                        TextToSpeech.QUEUE_FLUSH,
-                                        null,
-                                        null
-                                );
-
+                                btnMic.setColorFilter(android.graphics.Color.RED);
+                                SoundManager.playWrong(StudyActivity.this);
                             }
-
                         }
-
                     }
 
                     @Override
                     public void onError(int error) {
-
-                        btnMic.setColorFilter(
-                                android.graphics.Color.GRAY
-                        );
-
+                        btnMic.setColorFilter(android.graphics.Color.GRAY);
                     }
 
                     @Override public void onBeginningOfSpeech() {}
@@ -672,12 +588,9 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     // MUSIC
-
-
     @Override
     protected void onStart() {
         super.onStart();
-
         MusicManager.pauseMusic();
 
     }
@@ -685,28 +598,20 @@ public class StudyActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
         MusicManager.resumeMusic();
 
     }
 
-
     // DESTROY
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(speechRecognizer != null){
             speechRecognizer.destroy();
         }
-
         if(textToSpeech != null){
             textToSpeech.stop();
             textToSpeech.shutdown();
-
         }
-
     }
-
 }

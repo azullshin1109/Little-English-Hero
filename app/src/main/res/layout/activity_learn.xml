@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
-                android:text="Bài Học của Bé"
+                android:text="Bài Học của Bạn"
                 android:textColor="#2D5FA6"
                 android:textSize="22sp"
                 android:textStyle="bold"/>

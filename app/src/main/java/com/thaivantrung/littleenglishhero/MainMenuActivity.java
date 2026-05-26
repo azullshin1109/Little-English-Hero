@@ -10,13 +10,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -33,7 +36,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main_menu);
@@ -59,27 +61,19 @@ public class MainMenuActivity extends AppCompatActivity {
 
         progressXP = findViewById(R.id.progressXP);
 
-        // animation
         scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_anim);
 
-        // data
         SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
-
         String name = prefs.getString("player_name", "Little Hero");
-
         int avatar = prefs.getInt("player_avatar", R.drawable.avatar_bear);
 
         txtName.setText(name + "!");
         imgAvatar.setImageResource(avatar);
         loadPlayerProgress();
 
-        // BUTTON EFFECTS
         setButtonEffect(btnLearn, LearnActivity.class);
-
         setButtonEffect(btnScore, ScoreActivity.class);
 
-
-        // Cài Đặt Popup
         btnSettings.setOnClickListener(v -> {
             v.startAnimation(scaleAnimation);
             SoundManager.playClick(this);
@@ -87,17 +81,10 @@ public class MainMenuActivity extends AppCompatActivity {
         });
     }
 
-    // BUTTON EFFECT + SOUND + CHUYỂN MÀN
-    private void setButtonEffect(
-            LinearLayout button,
-            Class<?> targetActivity
-    ) {
+    private void setButtonEffect(LinearLayout button, Class<?> targetActivity) {
         button.setOnClickListener(v -> {
-            // animation
             v.startAnimation(scaleAnimation);
-            // sound
             SoundManager.playClick(this);
-            // delay nhẹ cho mượt
             v.postDelayed(() -> {
                 Intent intent = new Intent(MainMenuActivity.this, targetActivity);
                 startActivity(intent);
@@ -105,12 +92,9 @@ public class MainMenuActivity extends AppCompatActivity {
         });
     }
 
-    // SETTINGS POPUP
-    // SETTINGS POPUP
     private void showSettingsDialog() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_settings);
-
         dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
@@ -132,6 +116,8 @@ public class MainMenuActivity extends AppCompatActivity {
             editor.apply();
             switchMusic.setText(isChecked ? "Music ON" : "Music OFF");
             if (isChecked) {
+                // ĐÃ SỬA: Gọi playMusic để khởi tạo lại nếu máy vừa bị thoát ra
+                MusicManager.playMusic(MainMenuActivity.this);
                 MusicManager.resumeMusic();
             } else {
                 MusicManager.pauseMusic();
@@ -152,25 +138,31 @@ public class MainMenuActivity extends AppCompatActivity {
 
         // ===== LOGOUT BUTTON =====
         btnLogout.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             isLoggingOut = true;
-            // 1. Đăng xuất Firebase
+
             FirebaseAuth.getInstance().signOut();
 
-            // 3. FIX LỖI MẤT NHẠC: Giữ lại cấu hình Settings trước khi clear data
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            GoogleSignInClient googleClient = GoogleSignIn.getClient(MainMenuActivity.this, gso);
+
             boolean currentMusic = prefs.getBoolean("music_on", true);
             boolean currentEffect = prefs.getBoolean("effect_on", true);
 
-            editor.clear(); // Xóa data tiến độ (XP, name, avatar...)
-            editor.putBoolean("music_on", currentMusic); // Ghi lại cấu hình nhạc
+            editor.clear();
+            editor.putBoolean("music_on", currentMusic);
             editor.putBoolean("effect_on", currentEffect);
             editor.apply();
 
-            // Bỏ dòng MusicManager.stopMusic() nếu bạn muốn màn hình Login vẫn có nhạc nền.
-
-            Intent intent = new Intent(MainMenuActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            dialog.dismiss();
+            googleClient.signOut().addOnCompleteListener(task -> {
+                Intent intent = new Intent(MainMenuActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                dialog.dismiss();
+            });
         });
 
         // ===== CLOSE BUTTON =====
@@ -183,54 +175,38 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     private void loadPlayerProgress() {
+        SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
+        int totalXP = prefs.getInt("total_xp", 0);
+        int streak = prefs.getInt("streak", 0);
 
-        SharedPreferences prefs =
-                getSharedPreferences(
-                        "LEH_DATA",
-                        MODE_PRIVATE
-                );
-
-        int totalXP =
-                prefs.getInt(
-                        "total_xp",
-                        0
-                );
-        int streak =
-                prefs.getInt(
-                        "streak",
-                        0
-                );
-
-        // LEVEL
         int level = (totalXP / 100) + 1;
-
-        // XP hiện tại trong level
         int currentLevelXP = totalXP % 100;
 
-        // progress
         progressXP.setMax(100);
-
         progressXP.setProgress(currentLevelXP);
-
-        // text xp
-        txtXP.setText(
-                currentLevelXP
-                        + " / 100 XP"
-        );
-
-        // level
-        txtLevel.setText(
-                "Level " + level
-        );
-
+        txtXP.setText(currentLevelXP + " / 100 XP");
+        txtLevel.setText("Level " + level);
         txtStreak.setText("Day " + streak + " streak!");
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         loadPlayerProgress();
+
+        // CHỐT CHẶN BẢO MẬT: Ép hệ thống cập nhật đúng ý muốn của người dùng mỗi khi ra trang chủ
+        SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
+        boolean isMusicOn = prefs.getBoolean("music_on", true);
+        boolean isEffectOn = prefs.getBoolean("effect_on", true);
+
+        SoundManager.setEffectOn(isEffectOn);
+
+        if (isMusicOn) {
+            MusicManager.playMusic(this);
+            MusicManager.resumeMusic();
+        } else {
+            MusicManager.pauseMusic();
+        }
     }
 
     @Override
@@ -239,6 +215,5 @@ public class MainMenuActivity extends AppCompatActivity {
         if (!isLoggingOut) {
             MusicManager.stopMusic();
         }
-
     }
 }

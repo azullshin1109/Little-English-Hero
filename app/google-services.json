@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "643188807932-qlfqcjs6rpgbq1lm570puifu76hgrf6n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thaivantrung.littleenglishhero",
+            "certificate_hash": "1b3cca4f261936d5f0aad985ef72225faa25d248"
+          }
+        },
+        {
           "client_id": "643188807932-lci8mhb4o90qrnnb6r227okrgrl66ba9.apps.googleusercontent.com",
           "client_type": 3
         }
