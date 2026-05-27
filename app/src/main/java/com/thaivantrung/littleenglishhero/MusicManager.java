@@ -9,12 +9,11 @@ public class MusicManager {
 
     // phát nhạc
     public static void playMusic(Context context) {
-        // TỰ ĐỘNG CHẶN NGAY TỪ ĐẦU NẾU ĐANG CÀI ĐẶT TẮT NHẠC
         SharedPreferences prefs = context.getSharedPreferences("LEH_DATA", Context.MODE_PRIVATE);
         boolean isMusicOn = prefs.getBoolean("music_on", true);
 
         if (!isMusicOn) {
-            return; // Dừng lại, không phát âm thanh nào cả
+            return;
         }
 
         if (mediaPlayer == null) {

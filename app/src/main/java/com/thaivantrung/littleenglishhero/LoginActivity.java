@@ -3,6 +3,8 @@ package com.thaivantrung.littleenglishhero;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -11,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.*;
@@ -19,275 +23,284 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.*;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText etEmail, etPassword;
-    Button btnLogin;
-    Button btnCreate;
-    Button btnGoogle;
+    private EditText etEmail, etPassword;
+    private Button btnLogin, btnCreate, btnGoogle;
+    private TextView tvForgotPassword;
+    private ImageView ivTogglePassword, ivMascot;
 
-    FirebaseAuth auth;
-    FirebaseFirestore db;
-    ImageView imgMascost;
-    TextView tvForgotPassword;
-    ImageView ivTogglePassword;
-    boolean isPasswordVisible = false;
+    // Firebase
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
-    GoogleSignInClient googleClient;
+    // Google Sign In
+    private GoogleSignInClient googleClient;
+
+    // State
+    private boolean isPasswordVisible = false;
+
+    // Google Launcher
+    private final ActivityResultLauncher<Intent> googleLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        Intent data = result.getData();
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        try {
+                            GoogleSignInAccount account = task.getResult(ApiException.class);
+                            firebaseAuthWithGoogle(account.getIdToken());
+                        } catch (ApiException e) {
+                            showToast("Lỗi Google Sign-In");
+                            e.printStackTrace();
+                        }
+                    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        initViews();
+        initFirebase();
+        initGoogleSignIn();
+        setupAnimation();
+        setupListeners();
+    }
 
-        imgMascost =  findViewById(R.id.iv_mascot);
-        Animation floatingAnim = AnimationUtils.loadAnimation(this, R.anim.up_down);
-        imgMascost.startAnimation(floatingAnim);
 
-        // INIT VIEW
+    private void initViews() {
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
-
-        tvForgotPassword = findViewById(R.id.tv_forgot_password);
-        ivTogglePassword = findViewById(R.id.iv_toggle_password);
-
         btnLogin = findViewById(R.id.btn_login);
         btnCreate = findViewById(R.id.btn_create_account);
         btnGoogle = findViewById(R.id.btn_google_signin);
+        tvForgotPassword = findViewById(R.id.tv_forgot_password);
+        ivTogglePassword = findViewById(R.id.iv_toggle_password);
+        ivMascot = findViewById(R.id.iv_mascot);
+    }
 
-        // FIREBASE
+    private void initFirebase() {
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+    }
 
-        // GOOGLE SIGN IN
+    private void initGoogleSignIn() {
         GoogleSignInOptions gso =
                 new GoogleSignInOptions.Builder(
                         GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestIdToken(
+                                getString(R.string.default_web_client_id))
                         .requestEmail()
                         .build();
-
         googleClient = GoogleSignIn.getClient(this, gso);
+    }
 
-        // LOGIN
-        btnLogin.setOnClickListener(v -> loginUser());
+    private void setupAnimation() {
+        Animation floatingAnim = AnimationUtils.loadAnimation(this, R.anim.up_down);
+        ivMascot.startAnimation(floatingAnim);
+    }
 
-        ivTogglePassword.setOnClickListener(v -> {
-            if (isPasswordVisible) {
-                etPassword.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
-                ivTogglePassword.setImageResource(R.drawable.ic_eye_shut_one);
-            } else {
-                etPassword.setTransformationMethod(android.text.method.HideReturnsTransformationMethod.getInstance());
-                ivTogglePassword.setImageResource(R.drawable.ic_eye_open);
-            }
-            isPasswordVisible = !isPasswordVisible;
-            etPassword.setSelection(etPassword.getText().length());
+    private void setupListeners() {
+        btnLogin.setOnClickListener(v -> {
+            SoundManager.playClick(this);
+            loginUser();
         });
-        tvForgotPassword.setOnClickListener(v -> {
-            String email = etEmail.getText().toString().trim();
-            if (email.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập email của bạn vào ô trên để khôi phục mật khẩu", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            auth.sendPasswordResetEmail(email)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(this, "Đã gửi hướng dẫn khôi phục vào email: " + email, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(this, "Lỗi: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        btnCreate.setOnClickListener(v -> {
+            SoundManager.playClick(this);
+            registerUser();
         });
-
-        // REGISTER
-        btnCreate.setOnClickListener(v -> registerUser());
-
-        // GOOGLE LOGIN
         btnGoogle.setOnClickListener(v -> {
-            Intent intent = googleClient.getSignInIntent();
-            startActivityForResult(intent, 100);
+            SoundManager.playClick(this);
+            signInWithGoogle();
         });
+        tvForgotPassword.setOnClickListener(v -> resetPassword());
+        ivTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
     }
 
-    // LOGIN EMAIL
     private void loginUser() {
-
-        String email = etEmail.getText().toString().trim();
-        String pass = etPassword.getText().toString().trim();
-
-        if(email.isEmpty() || pass.isEmpty()) {
-            Toast.makeText(this,
-                    "Vui lòng nhập email và mật khẩu",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        auth.signInWithEmailAndPassword(email, pass)
+        String email = getEmail();
+        String password = getPassword();
+        if (!isValidInput(email, password)) return;
+        auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-
-                    if(task.isSuccessful()) {
-
-                        Toast.makeText(this,
-                                "Đăng nhập thành công",
-                                Toast.LENGTH_SHORT).show();
-
+                    if (task.isSuccessful()) {
+                        showToast("Đăng nhập thành công");
                         checkUser();
-
                     } else {
-
-                        Toast.makeText(this,
-                                task.getException().getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        showToast(task.getException().getMessage());
                     }
                 });
     }
 
-    // REGISTER EMAIL
     private void registerUser() {
-
-        String email = etEmail.getText().toString().trim();
-        String pass = etPassword.getText().toString().trim();
-
-        if(email.isEmpty() || pass.isEmpty()) {
-            Toast.makeText(this,
-                    "Vui lòng nhập email và mật khẩu",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        auth.createUserWithEmailAndPassword(email, pass)
+        String email = getEmail();
+        String password = getPassword();
+        if (!isValidInput(email, password)) return;
+        auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-
-                    if(task.isSuccessful()) {
-
-                        Toast.makeText(this,
-                                "Đăng kí thành công",
-                                Toast.LENGTH_SHORT).show();
-
+                    if (task.isSuccessful()) {
+                        showToast("Đăng kí thành công");
                         checkUser();
-
                     } else {
-
-                        Toast.makeText(this,
-                                task.getException().getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        showToast(task.getException().getMessage());
                     }
                 });
     }
 
-    // GOOGLE RESULT
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 100) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                // HIỂN THỊ MÃ LỖI ĐỂ BIẾT CHÍNH XÁC NGUYÊN NHÂN
-                Toast.makeText(this, "Lỗi Google Sign-In: " + e.getStatusCode(), Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
-        }
+    private void signInWithGoogle() {
+        Intent intent = googleClient.getSignInIntent();
+        googleLauncher.launch(intent);
     }
 
-    // FIREBASE GOOGLE LOGIN
     private void firebaseAuthWithGoogle(String token) {
-
-        AuthCredential credential =
-                GoogleAuthProvider.getCredential(token, null);
-
+        AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(task -> {
-
-                    if(task.isSuccessful()) {
-
-                        Toast.makeText(this,
-                                "Đăng nhập Google thành công",
-                                Toast.LENGTH_SHORT).show();
-
+                    if (task.isSuccessful()) {
+                        showToast("Đăng nhập Google thành công");
                         checkUser();
-
                     } else {
-
-                        Toast.makeText(this,
-                                "Đăng nhập Google thất bại",
-                                Toast.LENGTH_SHORT).show();
+                        showToast("Đăng nhập Google thất bại");
                     }
                 });
     }
 
-    // CHECK USER FIRESTORE
+
+    private void resetPassword() {
+        String email = getEmail();
+        if (email.isEmpty()) {
+            showToast("Vui lòng nhập email để khôi phục mật khẩu");
+            return;
+        }
+
+        auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        showToast("Đã gửi email khôi phục");
+                    } else {
+                        showToast(task.getException().getMessage());
+                    }
+                });
+    }
+
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            ivTogglePassword.setImageResource(R.drawable.ic_eye_shut_one);
+        } else {
+            etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            ivTogglePassword.setImageResource(R.drawable.ic_eye_open);
+        }
+        isPasswordVisible = !isPasswordVisible;
+        etPassword.setSelection(etPassword.getText().length());
+    }
+
+
     private void checkUser() {
-
-        String uid = auth.getCurrentUser().getUid();
-
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser == null) return;
+        String uid = currentUser.getUid();
         db.collection("users")
                 .document(uid)
                 .get()
-                .addOnSuccessListener(documentSnapshot -> {
+                .addOnSuccessListener(this::handleUserData);
+    }
 
-                    if (documentSnapshot.exists()) {
+    private void handleUserData(
+            @NonNull DocumentSnapshot document) {
+        if (document.exists()) {
+            saveUserToPreferences(document);
+            startActivity(new Intent(this, MainMenuActivity.class));
+        } else {
+            startActivity(new Intent(this, ChooseAvatarActivity.class));
+        }
 
-                        SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
+        finish();
+    }
 
-                        // 1. Lấy thông tin cơ bản
-                        String name = documentSnapshot.getString("name");
-                        Long avatarLong = documentSnapshot.getLong("avatar");
-                        int avatar = (avatarLong != null) ? avatarLong.intValue() : R.drawable.avatar_bear;
 
-                        // 2. Lấy các chỉ số XP và Score (xử lý an toàn tránh Null)
-                        Long xp = documentSnapshot.getLong("total_xp");
-                        Long quiz = documentSnapshot.getLong("quiz_correct");
-                        Long perf = documentSnapshot.getLong("perfect_quiz");
-                        Long lesson = documentSnapshot.getLong("lessons_done");
-                        Long streak = documentSnapshot.getLong("streak");
+    private void saveUserToPreferences(
+            DocumentSnapshot document) {
+        SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        String name = document.getString("name");
+        Long avatarLong = document.getLong("avatar");
+        int avatar = avatarLong != null
+                ? avatarLong.intValue()
+                : R.drawable.avatar_bear;
+        editor.putString(
+                        "player_name",
+                        name != null && !name.isEmpty()
+                                ? name
+                                : "Little Hero")
 
-                        Long famScore = documentSnapshot.getLong("family_score");
-                        Long aniScore = documentSnapshot.getLong("animals_score");
+                .putInt("player_avatar", avatar)
+                .putInt("total_xp", getIntValue(document, "total_xp"))
+                .putInt("quiz_correct", getIntValue(document, "quiz_correct"))
+                .putInt("perfect_quiz", getIntValue(document, "perfect_quiz"))
+                .putInt("lessons_done", getIntValue(document, "lessons_done"))
+                .putInt("streak", getIntValue(document, "streak"))
+                .putInt("family_score", getIntValue(document, "family_score"))
+                .putInt("animals_score", getIntValue(document, "animals_score"))
+                .putBoolean("family_perfect", getBooleanValue(document, "family_perfect"))
+                .putBoolean("animals_perfect", getBooleanValue(document, "animals_perfect"))
+                .putBoolean("fruits_perfect", getBooleanValue(document, "fruits_perfect"))
+                .putBoolean("colors_perfect", getBooleanValue(document, "colors_perfect"))
+                .putBoolean("numbers_perfect", getBooleanValue(document, "numbers_perfect"));
 
-                        // 3. Lấy Badge (Boolean)
-                        Boolean famPerf = documentSnapshot.getBoolean("family_perfect");
-                        Boolean aniPerf = documentSnapshot.getBoolean("animals_perfect");
-                        Boolean fruPerf = documentSnapshot.getBoolean("fruits_perfect");
-                        Boolean colPerf = documentSnapshot.getBoolean("colors_perfect");
-                        Boolean numPerf = documentSnapshot.getBoolean("numbers_perfect");
+        String lastDate = document.getString("last_study_date");
 
-                        // 4. Lưu toàn bộ vào SharedPreferences
-                        editor.putString("player_name", (name != null && !name.isEmpty()) ? name : "Little Hero")
-                                .putInt("player_avatar", avatar)
-                                .putInt("total_xp", (xp != null) ? xp.intValue() : 0)
-                                .putInt("quiz_correct", (quiz != null) ? quiz.intValue() : 0)
-                                .putInt("perfect_quiz", (perf != null) ? perf.intValue() : 0)
-                                .putInt("lessons_done", (lesson != null) ? lesson.intValue() : 0)
-                                .putInt("streak", (streak != null) ? streak.intValue() : 0)
-                                .putInt("family_score", (famScore != null) ? famScore.intValue() : 0)
-                                .putInt("animals_score", (aniScore != null) ? aniScore.intValue() : 0)
-                                .putBoolean("family_perfect", famPerf != null && famPerf)
-                                .putBoolean("animals_perfect", aniPerf != null && aniPerf)
-                                .putBoolean("fruits_perfect", fruPerf != null && fruPerf)
-                                .putBoolean("colors_perfect", colPerf != null && colPerf)
-                                .putBoolean("numbers_perfect", numPerf != null && numPerf);
+        if (lastDate != null) {
+            editor.putString("last_study_date", lastDate);
+        }
+        editor.apply();
+    }
 
-                        String lastDate = documentSnapshot.getString("last_study_date");
-                        if (lastDate != null) editor.putString("last_study_date", lastDate);
 
-                        editor.apply();
+    private String getEmail() {
+        return etEmail.getText().toString().trim();
+    }
 
-                        // Chuyển sang màn hình chính
-                        startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
-                        finish();
+    private String getPassword() {
+        return etPassword.getText().toString().trim();
+    }
 
-                    } else {
-                        // CHƯA CÓ PROFILE -> Chuyển sang màn hình chọn Avatar
-                        startActivity(new Intent(LoginActivity.this, ChooseAvatarActivity.class));
-                        finish();
-                    }
-                });
+    private boolean isValidInput(
+            String email,
+            String password) {
+
+        if (email.isEmpty() || password.isEmpty()) {
+
+            showToast("Vui lòng nhập email và mật khẩu");
+            return false;
+        }
+
+        return true;
+    }
+
+    private int getIntValue(
+            DocumentSnapshot document,
+            String key) {
+
+        Long value = document.getLong(key);
+        return value != null ? value.intValue() : 0;
+    }
+
+    private boolean getBooleanValue(
+            DocumentSnapshot document,
+            String key) {
+
+        Boolean value = document.getBoolean(key);
+        return value != null && value;
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this,
+                message,
+                Toast.LENGTH_SHORT).show();
     }
 }

@@ -105,18 +105,15 @@ public class MainMenuActivity extends AppCompatActivity {
         Button btnLogout = dialog.findViewById(R.id.btnLogout);
         Button btnClose = dialog.findViewById(R.id.btnClose);
 
-        // ===== MUSIC STATE =====
         boolean isMusicOn = prefs.getBoolean("music_on", true);
         switchMusic.setOnCheckedChangeListener(null);
         switchMusic.setChecked(isMusicOn);
         switchMusic.setText(isMusicOn ? "Music ON" : "Music OFF");
-
         switchMusic.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("music_on", isChecked);
             editor.apply();
             switchMusic.setText(isChecked ? "Music ON" : "Music OFF");
             if (isChecked) {
-                // ĐÃ SỬA: Gọi playMusic để khởi tạo lại nếu máy vừa bị thoát ra
                 MusicManager.playMusic(MainMenuActivity.this);
                 MusicManager.resumeMusic();
             } else {
@@ -124,7 +121,7 @@ public class MainMenuActivity extends AppCompatActivity {
             }
         });
 
-        // ===== EFFECT STATE =====
+        //  EFFECT STATE
         boolean isEffectOn = prefs.getBoolean("effect_on", true);
         switchEffect.setChecked(isEffectOn);
         switchEffect.setText(isEffectOn ? "Effect ON" : "Effect OFF");
@@ -136,7 +133,7 @@ public class MainMenuActivity extends AppCompatActivity {
             SoundManager.setEffectOn(isChecked);
         });
 
-        // ===== LOGOUT BUTTON =====
+        //  LOGOUT BUTTON
         btnLogout.setOnClickListener(v -> {
             SoundManager.playClick(this);
             isLoggingOut = true;
@@ -165,12 +162,10 @@ public class MainMenuActivity extends AppCompatActivity {
             });
         });
 
-        // ===== CLOSE BUTTON =====
         btnClose.setOnClickListener(v -> {
             SoundManager.playClick(this);
             dialog.dismiss();
         });
-
         dialog.show();
     }
 
@@ -178,29 +173,29 @@ public class MainMenuActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
         int totalXP = prefs.getInt("total_xp", 0);
         int streak = prefs.getInt("streak", 0);
-
         int level = (totalXP / 100) + 1;
         int currentLevelXP = totalXP % 100;
-
         progressXP.setMax(100);
         progressXP.setProgress(currentLevelXP);
         txtXP.setText(currentLevelXP + " / 100 XP");
         txtLevel.setText("Level " + level);
-        txtStreak.setText("Day " + streak + " streak!");
-    }
 
+        // STREAK
+        if(streak <= 0){
+            txtStreak.setText("Chưa học bài nào!");
+        }
+        else{
+            txtStreak.setText(streak + " Day Streak!");
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();
         loadPlayerProgress();
-
-        // CHỐT CHẶN BẢO MẬT: Ép hệ thống cập nhật đúng ý muốn của người dùng mỗi khi ra trang chủ
         SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
         boolean isMusicOn = prefs.getBoolean("music_on", true);
         boolean isEffectOn = prefs.getBoolean("effect_on", true);
-
         SoundManager.setEffectOn(isEffectOn);
-
         if (isMusicOn) {
             MusicManager.playMusic(this);
             MusicManager.resumeMusic();

@@ -42,16 +42,14 @@ public class ChooseAvatarActivity extends AppCompatActivity {
 
         edtName = findViewById(R.id.edtName);
 
-        // GỌI HÀM NÀY ĐỂ LẮNG NGHE SỰ KIỆN CHỌN AVATAR
         avatarClick();
 
         findViewById(R.id.btnLetsGo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                SoundManager.playClick(ChooseAvatarActivity.this);
                 String name = edtName.getText().toString().trim();
 
-                // 1. Kiểm tra avatar
                 if(selectedAvatar == -1){
                     edtName.setError(null);
                     android.widget.Toast.makeText(
@@ -62,21 +60,15 @@ public class ChooseAvatarActivity extends AppCompatActivity {
                     return;
                 }
 
-                // 2. Kiểm tra tên
                 if(name.isEmpty()){
                     edtName.setError("Biệt danh của siêu anh hùng là gì?");
                     edtName.requestFocus();
                     return;
                 }
 
-                // 3. Lưu vào SharedPreferences (Cục bộ)
                 SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
-                prefs.edit()
-                        .putString("player_name", name)
-                        .putInt("player_avatar", selectedAvatar)
-                        .apply();
+                prefs.edit().putString("player_name", name).putInt("player_avatar", selectedAvatar).apply();
 
-                // 4. Lưu dữ liệu lên Firestore (Đám mây)
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -110,41 +102,47 @@ public class ChooseAvatarActivity extends AppCompatActivity {
                 }
             }
         });
-    } // <-- ĐÃ THÊM DẤU NGOẶC ĐÓNG HÀM onCreate() TẠI ĐÂY
+    }
 
     private void avatarClick(){
 
         av1.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             selectedAvatar = R.drawable.avatar_tiger;
             resetAvatar();
             av1.setBackgroundResource(R.drawable.bg_avatar_selected);
         });
 
         av2.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             selectedAvatar = R.drawable.avatar_bear;
             resetAvatar();
             av2.setBackgroundResource(R.drawable.bg_avatar_selected);
         });
 
         av3.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             selectedAvatar = R.drawable.avatar_cat;
             resetAvatar();
             av3.setBackgroundResource(R.drawable.bg_avatar_selected);
         });
 
         av4.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             selectedAvatar = R.drawable.avatar_chick;
             resetAvatar();
             av4.setBackgroundResource(R.drawable.bg_avatar_selected);
         });
 
         av5.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             selectedAvatar = R.drawable.avatar_lion;
             resetAvatar();
             av5.setBackgroundResource(R.drawable.bg_avatar_selected);
         });
 
         av6.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             selectedAvatar = R.drawable.avatar_pig;
             resetAvatar();
             av6.setBackgroundResource(R.drawable.bg_avatar_selected);

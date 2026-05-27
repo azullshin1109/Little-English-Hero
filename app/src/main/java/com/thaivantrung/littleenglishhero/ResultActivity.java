@@ -50,7 +50,7 @@ public class ResultActivity extends AppCompatActivity {
         imgTrophy.startAnimation(rotateAnim);
         imgConfettiRight.startAnimation(trophyAnim);
         imgConfettiLeft.startAnimation(trophyAnim);
-        // FIND VIEW
+
         tvScoreCurrent = findViewById(R.id.tv_score_current);
         tvScoreTotal = findViewById(R.id.tv_score_total);
         tvStatAccuracyValue = findViewById(R.id.tv_stat_accuracy_value);
@@ -66,179 +66,61 @@ public class ResultActivity extends AppCompatActivity {
         ivStar3 = findViewById(R.id.iv_star_3);
 
         cardReplay = findViewById(R.id.cardView_btn_replay);
-
         cardAnotherLesson = findViewById(R.id.cardView_btn_next_lesson);
 
-        // GET DATA
 
+        int score = getIntent().getIntExtra("score", 0);
+        int total = getIntent().getIntExtra("total", 10);
+        long timeMillis = getIntent().getLongExtra("time", 0);
+        int lessonId = getIntent().getIntExtra("lessonId", 1);
 
-        int score =
-                getIntent().getIntExtra(
-                        "score",
-                        0
-                );
+        int accuracy = (score * 100) / total;
+        long totalSeconds = timeMillis / 1000;
+        long minutes = totalSeconds / 60;
+        long seconds = totalSeconds % 60;
 
-        int total =
-                getIntent().getIntExtra(
-                        "total",
-                        10
-                );
-
-        long timeMillis =
-                getIntent().getLongExtra(
-                        "time",
-                        0
-                );
-
-        int lessonId =
-                getIntent().getIntExtra(
-                        "lessonId",
-                        1
-                );
-
-        // =========================
-        // CALCULATE
-        // =========================
-
-        int accuracy =
-                (score * 100) / total;
-
-        long totalSeconds =
-                timeMillis / 1000;
-
-        long minutes =
-                totalSeconds / 60;
-
-        long seconds =
-                totalSeconds % 60;
-
-        // =========================
-        // SCORE
-        // =========================
-
-        tvScoreCurrent.setText(
-                String.valueOf(score)
-        );
-
-        tvScoreTotal.setText(
-                String.valueOf(total)
-        );
-
-        // =========================
-        // ACCURACY
-        // =========================
-
-        tvStatAccuracyValue.setText(
-                accuracy + "%"
-        );
-
-        // =========================
-        // TIME
-        // =========================
-
-        String timeText =
-                String.format(
-                        "%02d:%02d",
-                        minutes,
-                        seconds
-                );
-
+        tvScoreCurrent.setText(String.valueOf(score));
+        tvScoreTotal.setText(String.valueOf(total));
+        tvStatAccuracyValue.setText(accuracy + "%");
+        String timeText = String.format("%02d:%02d", minutes, seconds);
         tvStatTimeValue.setText(timeText);
-
-        // =========================
-        // STAR + TEXT
-        // =========================
 
         ivStar1.setAlpha(0.2f);
         ivStar2.setAlpha(0.2f);
         ivStar3.setAlpha(0.2f);
 
-        // 3 STAR
         if(accuracy == 100){
-
             ivStar1.setAlpha(1f);
             ivStar2.setAlpha(1f);
             ivStar3.setAlpha(1f);
-
-            tvRatingText.setText(
-                    "Perfect Hero!"
-            );
-
-            tvTitleExcellent.setText(
-                    "Xuất sắc!"
-            );
-
-            tvSubtitle.setText(
-                    "Bé đã trả lời đúng tất cả!"
-            );
-
-            tvMascotCheer.setText(
-                    "Tuyệt vời!"
-            );
-
-            tvMascotMessage.setText(
-                    "Bé thật sự là một Little English Hero!"
-            );
+            tvRatingText.setText("Perfect Hero!");
+            tvTitleExcellent.setText("Xuất sắc!");
+            tvSubtitle.setText("Bạn đã trả lời đúng tất cả!");
+            tvMascotCheer.setText("Tuyệt vời!");
+            tvMascotMessage.setText("Bạn thật sự là một Anh Hùng!");
 
         }
-
-        // 2 STAR
         else if(accuracy >= 50){
-
             ivStar1.setAlpha(1f);
             ivStar2.setAlpha(1f);
-
-            tvRatingText.setText(
-                    "Great Job!"
-            );
-
-            tvTitleExcellent.setText(
-                    "Rất tốt!"
-            );
-
-            tvSubtitle.setText(
-                    "Bé làm rất tốt rồi!"
-            );
-
-            tvMascotCheer.setText(
-                    "Giỏi lắm!"
-            );
-
-            tvMascotMessage.setText(
-                    "Cố thêm chút nữa là đạt 3 sao rồi!"
-            );
-
+            tvRatingText.setText("Great Job!");
+            tvTitleExcellent.setText("Rất tốt!");
+            tvSubtitle.setText("Bạn làm rất tốt rồi!");
+            tvMascotCheer.setText("Giỏi lắm!");
+            tvMascotMessage.setText("Cố thêm chút nữa là đạt 3 sao rồi!");
         }
-
-        // 1 STAR
         else {
-
             ivStar1.setAlpha(1f);
-
-            tvRatingText.setText(
-                    "Keep Trying!"
-            );
-
-            tvTitleExcellent.setText(
-                    "Cố lên nhé!"
-            );
-
-            tvSubtitle.setText(
-                    "Luyện tập thêm sẽ giỏi hơn!"
-            );
-
-            tvMascotCheer.setText(
-                    "Không sao đâu!"
-            );
-
-            tvMascotMessage.setText(
-                    "Bé hãy thử lại lần nữa nhé!"
-            );
-
+            tvRatingText.setText("Keep Trying!");
+            tvTitleExcellent.setText("Cố lên nhé!");
+            tvSubtitle.setText("Luyện tập thêm sẽ giỏi hơn!");
+            tvMascotCheer.setText("Không sao đâu mà có tôi đây rồi!");
+            tvMascotMessage.setText("Bạn hãy thử lại lần nữa nhé!");
         }
 
         // CHOI LAI
         cardReplay.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             Intent intent =new Intent(ResultActivity.this, StudyActivity.class);
             intent.putExtra("lessonId", lessonId);
             intent.putExtra("startQuizOnly", true);
@@ -248,6 +130,7 @@ public class ResultActivity extends AppCompatActivity {
 
         // BAI HOC KHAC
         cardAnotherLesson.setOnClickListener(v -> {
+            SoundManager.playClick(this);
             Intent intent = new Intent(ResultActivity.this, LearnActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

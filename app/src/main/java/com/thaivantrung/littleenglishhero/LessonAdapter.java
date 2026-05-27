@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder>{
-
     Context context;
     ArrayList<LessonModel> list;
 
@@ -26,85 +25,46 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     @NonNull
     @Override
     public LessonAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View view = LayoutInflater.from(context)
-                .inflate(R.layout.item_lesson, parent, false);
-
+        View view = LayoutInflater.from(context).inflate(R.layout.item_lesson, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull LessonAdapter.ViewHolder holder, int position) {
-
         LessonModel lesson = list.get(position);
-
-        holder.imgLesson.setImageResource(
-                lesson.getImage()
-        );
-
-        holder.txtLesson.setText(
-                lesson.getLesson()
-        );
-
-        holder.txtTitle.setText(
-                lesson.getTitle()
-        );
-
-        holder.txtActivity.setText(
-                lesson.getActivity()
-        );
+        holder.imgLesson.setImageResource(lesson.getImage());
+        holder.txtLesson.setText(lesson.getLesson());
+        holder.txtTitle.setText(lesson.getTitle());
+        holder.txtActivity.setText(lesson.getActivity());
 
         // CLICK ITEM
         holder.itemView.setOnClickListener(v -> {
-
+            SoundManager.playClick(context);
             Intent intent = new Intent(context, StudyActivity.class);
-
-            // gửi dữ liệu qua Study
             intent.putExtra("lessonTitle", lesson.getTitle());
-
             context.startActivity(intent);
-
         });
 
         holder.itemView.setOnClickListener(v -> {
-
-            Intent intent = new Intent(
-                    context,
-                    StudyActivity.class
-            );
-
-            intent.putExtra(
-                    "lessonId",
-                    lesson.getLessonId()
-            );
-
+            SoundManager.playClick(context);
+            Intent intent = new Intent(context, StudyActivity.class);
+            intent.putExtra("lessonId", lesson.getLessonId());
             context.startActivity(intent);
-
         });
-
-
-
     }
 
     @Override
     public int getItemCount() {
         return list.size();
     }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         ImageView imgLesson;
         TextView txtLesson, txtTitle, txtActivity;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             imgLesson = itemView.findViewById(R.id.imgLesson);
-
             txtLesson = itemView.findViewById(R.id.txtLesson);
-
             txtTitle = itemView.findViewById(R.id.txtTitle);
-
             txtActivity = itemView.findViewById(R.id.txtActivity);
         }
     }

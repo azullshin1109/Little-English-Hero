@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class ScoreActivity extends AppCompatActivity {
-
     // HEADER
     ImageView btnBack;
     ImageView imgAvatar;
@@ -52,29 +51,16 @@ public class ScoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
-
         initViews();
-
         prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
 
-        // LOAD ALL DATA
         loadPlayerInfo();
-
         loadScoreData();
-
-        calculateStreak();
-
         checkBadge();
 
         btnBack.setOnClickListener(v -> {
-
-            startActivity(
-                    new Intent(
-                            ScoreActivity.this,
-                            MainMenuActivity.class
-                    )
-            );
-
+                SoundManager.playClick(this);
+            startActivity(new Intent(ScoreActivity.this, MainMenuActivity.class));
             finish();
         });
     }
@@ -88,6 +74,7 @@ public class ScoreActivity extends AppCompatActivity {
         tvQuiz = findViewById(R.id.tv_quiz_correct);
         tvPerfect = findViewById(R.id.tv_perfect_quiz);
         tvLesson = findViewById(R.id.tv_lessons_done);
+
         // LEVEL
         tvLevel = findViewById(R.id.tv_level);
         tvNextLevel = findViewById(R.id.tv_next_level);
@@ -104,22 +91,12 @@ public class ScoreActivity extends AppCompatActivity {
         badgeQuiz = findViewById(R.id.badge_quiz);
     }
     private void loadPlayerInfo() {
-        String name =
-                prefs.getString(
-                        "player_name",
-                        "Little Hero"
-                );
-
-        int avatar =
-                prefs.getInt(
-                        "player_avatar",
-                        R.drawable.avatar_bear
-                );
-
+        String name = prefs.getString("player_name", "Little Hero");
+        int avatar = prefs.getInt("player_avatar", R.drawable.avatar_bear);
         txtName.setText(name + "!");
-
         imgAvatar.setImageResource(avatar);
     }
+
     // SCORE
     private void loadScoreData() {
         int xp = prefs.getInt("total_xp", 0);
@@ -127,12 +104,12 @@ public class ScoreActivity extends AppCompatActivity {
         int perfectQuiz = prefs.getInt("perfect_quiz", 0);
         int lessonsDone = prefs.getInt("lessons_done", 0);
 
-        // LEVEL SYSTEM
+        // LEVEL
         int level = (xp / 100) + 1;
         int currentXP = xp % 100;
         int needXP = 100 - currentXP;
 
-        // SET TEXT
+        //TEXT
         tvXP.setText(String.valueOf(xp));
         tvQuiz.setText(String.valueOf(quizCorrect));
         tvPerfect.setText(String.valueOf(perfectQuiz));
@@ -148,151 +125,40 @@ public class ScoreActivity extends AppCompatActivity {
         // PROGRESS BAR
         progressXP.setMax(100);
         progressXP.setProgress(currentXP);
-    }
 
-    // STREAK
-    private void calculateStreak() {
-        String lastStudyDate = prefs.getString("last_study_date", "");
+        //STREAK
         int streak = prefs.getInt("streak", 0);
-        String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Calendar.getInstance().getTime());
-        if(lastStudyDate.equals("")) {
-            streak = 1;
-            prefs.edit()
-                    .putString(
-                            "last_study_date",
-                            today
-                    )
-                    .putInt(
-                            "streak",
-                            streak
-                    )
-                    .apply();
-
-        } else {
-            try {
-                SimpleDateFormat sdf =
-                        new SimpleDateFormat(
-                                "dd/MM/yyyy",
-                                Locale.getDefault()
-                        );
-                Calendar lastCal =
-                        Calendar.getInstance();
-                lastCal.setTime(
-                        sdf.parse(lastStudyDate)
-                );
-                Calendar todayCal =
-                        Calendar.getInstance();
-                long diff =
-                        todayCal.getTimeInMillis()
-                                - lastCal.getTimeInMillis();
-                long days =
-                        diff / (1000 * 60 * 60 * 24);
-                // HỌC LIÊN TIẾP
-                if(days == 1) {
-                    streak++;
-                    prefs.edit()
-                            .putInt(
-                                    "streak",
-                                    streak
-                            )
-                            .putString(
-                                    "last_study_date",
-                                    today
-                            )
-                            .apply();
-                }
-
-                // NGHỈ QUÁ 1 NGÀY
-                else if(days > 1) {
-
-                    streak = 1;
-
-                    prefs.edit()
-                            .putInt(
-                                    "streak",
-                                    streak
-                            )
-                            .putString(
-                                    "last_study_date",
-                                    today
-                            )
-                            .apply();
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
+        if(streak <= 0){
+            tvStreak.setText("Chưa học bài nào!");
         }
-
-        tvStreak.setText(streak + " Days");
+        else{
+            tvStreak.setText(streak + " Days");
+        }
     }
 
-    // =========================
     // BADGE
-    // =========================
     private void checkBadge() {
-
-        int familyScore =
-                prefs.getInt(
-                        "family_score",
-                        0
-                );
-
-        int animalScore =
-                prefs.getInt(
-                        "animals_score",
-                        0
-                );
+        int familyScore = prefs.getInt("family_score", 0);
+        int animalScore = prefs.getInt("animals_score", 0);
 
         // PERFECT LESSON
-        boolean familyPerfect =
-                prefs.getBoolean(
-                        "family_perfect",
-                        false
-                );
-
-        boolean animalPerfect =
-                prefs.getBoolean(
-                        "animals_perfect",
-                        false
-                );
-
-        boolean fruitsPerfect =
-                prefs.getBoolean(
-                        "fruits_perfect",
-                        false
-                );
-
-        boolean colorPerfect =
-                prefs.getBoolean(
-                        "colors_perfect",
-                        false
-                );
-
-        boolean jobsPerfect =
-                prefs.getBoolean(
-                        "numbers_perfect",
-                        false
-                );
+        boolean familyPerfect = prefs.getBoolean("family_perfect", false);
+        boolean animalPerfect = prefs.getBoolean("animals_perfect", false);
+        boolean fruitsPerfect = prefs.getBoolean("fruits_perfect", false);
+        boolean colorPerfect = prefs.getBoolean("colors_perfect", false);
+        boolean jobsPerfect = prefs.getBoolean("numbers_perfect", false);
 
         // FAMILY MASTER
         if(familyScore >= 100) {
-
             badgeFamily.setAlpha(1f);
-
         } else {
-
             badgeFamily.setAlpha(0.4f);
         }
 
         // ANIMAL MASTER
         if(animalScore >= 100) {
-
             badgeAnimal.setAlpha(1f);
-
         } else {
-
             badgeAnimal.setAlpha(0.4f);
         }
 
@@ -304,18 +170,12 @@ public class ScoreActivity extends AppCompatActivity {
                         && colorPerfect
                         && jobsPerfect
         ) {
-
             badgeQuiz.setAlpha(1f);
-
         } else {
-
             badgeQuiz.setAlpha(0.4f);
         }
     }
 
-
-    // ADD XP AFTER QUIZ
-    // ADD XP AFTER QUIZ
     public static void addXP(
             AppCompatActivity activity,
             int addXP,
@@ -323,64 +183,78 @@ public class ScoreActivity extends AppCompatActivity {
             String lessonType,
             int lessonScore
     ){
-
         SharedPreferences prefs = activity.getSharedPreferences("LEH_DATA", MODE_PRIVATE);
 
-        // CURRENT DATA
         int xp = prefs.getInt("total_xp", 0);
         int quizCorrect = prefs.getInt("quiz_correct", 0);
         int perfect = prefs.getInt("perfect_quiz", 0);
         int lessonsDone = prefs.getInt("lessons_done", 0);
 
-        // ADD
         xp += addXP;
         quizCorrect++;
         lessonsDone++;
 
         SharedPreferences.Editor editor = prefs.edit();
-
         if(perfectQuiz) {
             perfect++;
-            // SAVE PERFECT LESSON
             if(lessonType.equals("family")) editor.putBoolean("family_perfect", true);
             if(lessonType.equals("animals")) editor.putBoolean("animals_perfect", true);
             if(lessonType.equals("fruits")) editor.putBoolean("fruits_perfect", true);
             if(lessonType.equals("colors")) editor.putBoolean("colors_perfect", true);
             if(lessonType.equals("numbers")) editor.putBoolean("numbers_perfect", true);
         }
-
-        // SAVE
         editor.putInt("total_xp", xp);
         editor.putInt("quiz_correct", quizCorrect);
         editor.putInt("perfect_quiz", perfect);
         editor.putInt("lessons_done", lessonsDone);
 
-        // SAVE LESSON SCORE
         if(lessonType.equals("family")) {
             editor.putInt("family_score", lessonScore);
         }
-        if(lessonType.equals("animals")) { // Đã sửa từ "animal" thành "animals" cho đồng bộ với checkBadge
+        if(lessonType.equals("animals")) {
             editor.putInt("animals_score", lessonScore);
         }
-
-        // SAVE STREAK DATE
+        String lastStudyDate = prefs.getString("last_study_date", "");
         String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Calendar.getInstance().getTime());
+        int streak = prefs.getInt("streak", 0);
+        try {
+            if(lastStudyDate.equals("")){
+                streak = 1;
+            }
+
+            else {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                Calendar lastCal = Calendar.getInstance();
+                lastCal.setTime(sdf.parse(lastStudyDate));
+                Calendar todayCal = Calendar.getInstance();
+                long diff = todayCal.getTimeInMillis() - lastCal.getTimeInMillis();
+                long days = diff / (1000 * 60 * 60 * 24);
+
+                if(days == 1){
+                    streak++;
+                }
+
+                else if(days > 1){
+                    streak = 1;
+                }
+
+                else if(days == 0){
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        editor.putInt("streak", streak);
         editor.putString("last_study_date", today);
 
-        // Áp dụng lưu cục bộ
         editor.apply();
 
-        // ==========================================
-        // SYNC LÊN FIRESTORE (ĐÁM MÂY)
-        // ==========================================
         com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
             com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-
             java.util.Map<String, Object> progressData = new java.util.HashMap<>();
-
-            // Thông tin cơ bản
             progressData.put("total_xp", prefs.getInt("total_xp", 0));
             progressData.put("quiz_correct", prefs.getInt("quiz_correct", 0));
             progressData.put("perfect_quiz", prefs.getInt("perfect_quiz", 0));
@@ -388,20 +262,16 @@ public class ScoreActivity extends AppCompatActivity {
             progressData.put("streak", prefs.getInt("streak", 0));
             progressData.put("last_study_date", prefs.getString("last_study_date", ""));
 
-            // Điểm chủ đề
             progressData.put("family_score", prefs.getInt("family_score", 0));
             progressData.put("animals_score", prefs.getInt("animals_score", 0));
 
-            // Huy hiệu hoàn hảo (Badge)
             progressData.put("family_perfect", prefs.getBoolean("family_perfect", false));
             progressData.put("animals_perfect", prefs.getBoolean("animals_perfect", false));
             progressData.put("fruits_perfect", prefs.getBoolean("fruits_perfect", false));
             progressData.put("colors_perfect", prefs.getBoolean("colors_perfect", false));
             progressData.put("numbers_perfect", prefs.getBoolean("numbers_perfect", false));
 
-            // Dùng SetOptions.merge() để cập nhật dữ liệu mà không làm mất name hay avatar đã có
-            db.collection("users").document(uid)
-                    .set(progressData, com.google.firebase.firestore.SetOptions.merge());
+            db.collection("users").document(uid).set(progressData, com.google.firebase.firestore.SetOptions.merge());
         }
     }
 }

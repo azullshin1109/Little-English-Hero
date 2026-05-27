@@ -28,8 +28,9 @@ public class LearnActivity extends AppCompatActivity {
 
         AnhXa();
 
-        btnBack.setOnClickListener(v -> finish());
-
+        btnBack.setOnClickListener(v -> {
+            SoundManager.playClick(this);
+            finish();});
         list = new ArrayList<>();
 
 
@@ -50,6 +51,7 @@ public class LearnActivity extends AppCompatActivity {
         ));
 
         list.add(new LessonModel(
+
                 R.drawable.img_family,
                 "Bài học 3",
                 "Gia Đình",
@@ -74,16 +76,12 @@ public class LearnActivity extends AppCompatActivity {
         ));
 
         adapter = new LessonAdapter(this, list);
-
         rcvLesson.setLayoutManager(new LinearLayoutManager(this));
-
         rcvLesson.setAdapter(adapter);
     }
 
     private void AnhXa() {
-
         rcvLesson = findViewById(R.id.rcvLesson);
-
         btnBack = findViewById(R.id.btnBack);
     }
 }

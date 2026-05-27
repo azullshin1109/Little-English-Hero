@@ -30,7 +30,6 @@ import java.util.Random;
 
 public class StudyActivity extends AppCompatActivity {
     FrameLayout frameContent;
-
     // FLASHCARD
     ProgressBar progressWord;
 
@@ -85,7 +84,6 @@ public class StudyActivity extends AppCompatActivity {
     int correctAnswer = 0;
     long startQuizTime;
     long endQuizTime;
-    int totalQuizQuestion = 10;
     boolean isImageQuiz = false;
     boolean startQuizOnly = false;
 
@@ -102,7 +100,7 @@ public class StudyActivity extends AppCompatActivity {
         startQuizOnly = getIntent().getBooleanExtra("startQuizOnly", false);
         list = dbHelper.getVocabularyByLesson(lessonId);
 
-        // RANDOM QUIZ LIST
+        // RANDOM QUIZ
         quizList = new ArrayList<>(list);
         Collections.shuffle(quizList);
         quizList = new ArrayList<>();
@@ -117,7 +115,7 @@ public class StudyActivity extends AppCompatActivity {
                 }
             }
         }
-        // START QUIZ ONLY
+        // BAT DAU QUIZ
         if(startQuizOnly){
             showRandomQuiz();
         } else {
@@ -138,7 +136,6 @@ public class StudyActivity extends AppCompatActivity {
             });
         }
 
-        // TEXT TO SPEECH
         textToSpeech = new TextToSpeech(this, status -> {
             if(status != TextToSpeech.ERROR){
                 textToSpeech.setLanguage(Locale.US);
@@ -151,11 +148,7 @@ public class StudyActivity extends AppCompatActivity {
         // PERMISSION
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO
         ) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.RECORD_AUDIO},
-                    1
-            );
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
         }
     }
 
@@ -210,28 +203,22 @@ public class StudyActivity extends AppCompatActivity {
         progressWord.setProgress(currentIndex + 1);
 
         txtProgress.setText((currentIndex + 1) + " / " + list.size() + " Từ" );
+
         // SPEAK
         btnSpeak.setOnClickListener(v -> {
             textToSpeech.setLanguage(Locale.US);
-            textToSpeech.speak(
-                    vocab.getWord(),
-                    TextToSpeech.QUEUE_FLUSH,
-                    null,
-                    null
+            textToSpeech.speak(vocab.getWord(), TextToSpeech.QUEUE_FLUSH, null, null
             );
         });
 
         // MIC
         btnMic.setOnClickListener(v -> {
             btnMic.clearColorFilter();
-            speechRecognizer.startListening(
-                    speechIntent
-            );
+            speechRecognizer.startListening(speechIntent);
         });
     }
 
     // RANDOM QUIZ
-
     private void showRandomQuiz(){
         if(currentIndex == 0){
             startQuizTime = System.currentTimeMillis();
@@ -245,7 +232,6 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     // QUIZ TRANSLATE
-
     private void showQuizTranslate(){
         frameContent.removeAllViews();
 
@@ -279,7 +265,6 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void loadQuizTranslate(){
-        // GỌI HÀM RESET MÀU NÚT
         resetAnswerButtons();
 
         VocabularyModel vocab = quizList.get(currentIndex);
@@ -300,29 +285,13 @@ public class StudyActivity extends AppCompatActivity {
         btnAnswer4.setText(answers.get(3));
 
         btnAnswer1.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer1,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer1, vocab));
         btnAnswer2.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer2,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer2, vocab));
         btnAnswer3.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer3,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer3, vocab));
         btnAnswer4.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer4,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer4, vocab));
         tvSpeechBubble.setText("Chọn nghĩa đúng cho từ này nhé!");
         updateQuizProgress();
     }
@@ -332,7 +301,6 @@ public class StudyActivity extends AppCompatActivity {
 
         frameContent.removeAllViews();
         View view = getLayoutInflater().inflate(R.layout.item_quiz_image, null);
-        //btn_back
         ImageView btnBack = view.findViewById(R.id.btn_back_image);
         btnBack.setOnClickListener(v -> finish());
 
@@ -362,16 +330,9 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void loadQuizImage(){
-        // GỌI HÀM RESET MÀU NÚT
         resetAnswerButtons();
-
         VocabularyModel vocab = quizList.get(currentIndex);
-        int imageId = getResources().getIdentifier(
-                vocab.getImage(),
-                "drawable",
-                getPackageName()
-        );
-
+        int imageId = getResources().getIdentifier(vocab.getImage(), "drawable", getPackageName());
         tvQuestionImage.setImageResource(imageId);
         ArrayList<String> answers = new ArrayList<>();
         answers.add(vocab.getWord());
@@ -382,38 +343,20 @@ public class StudyActivity extends AppCompatActivity {
             }
         }
         Collections.shuffle(answers);
-
         btnAnswer1.setText(answers.get(0));
         btnAnswer2.setText(answers.get(1));
         btnAnswer3.setText(answers.get(2));
         btnAnswer4.setText(answers.get(3));
 
         btnAnswer1.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer1,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer1, vocab));
         btnAnswer2.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer2,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer2, vocab));
         btnAnswer3.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer3,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer3, vocab));
         btnAnswer4.setOnClickListener(v ->
-                checkAnswer(
-                        btnAnswer4,
-                        vocab
-                ));
-
+                checkAnswer(btnAnswer4, vocab));
         tvQuestionPrompt.setText("Hình này tiếng Anh là gì?");
-
         updateQuizProgress();
 
     }
@@ -435,10 +378,8 @@ public class StudyActivity extends AppCompatActivity {
 
     // CHECK ANSWER
     private void checkAnswer(Button selectedBtn, VocabularyModel vocab) {
-
         String selectedAnswer = selectedBtn.getText().toString();
         boolean isCorrect = selectedAnswer.equals(vocab.getWord());
-
         btnAnswer1.setEnabled(false);
         btnAnswer2.setEnabled(false);
         btnAnswer3.setEnabled(false);
@@ -455,11 +396,9 @@ public class StudyActivity extends AppCompatActivity {
 
         if(isCorrect){
             selectedBtn.setBackgroundResource(R.drawable.bg_avatar_selected);
-
             scrose++;
             correctAnswer++;
             int earnedXP = isImageQuiz ? 15 : 10;
-
             currentXP += earnedXP;
             earnedSessionXP += earnedXP;
             tvXP.setText(currentXP + " XP");
@@ -483,18 +422,15 @@ public class StudyActivity extends AppCompatActivity {
             feedbackPanel.setBackgroundResource(R.drawable.bg_btn_wrong);
             tvFeedbackSub.setText("Đáp án đúng là " + vocab.getWord());
             tvXPEarned.setText("+0 XP");
-
             SoundManager.playWrong(this);
         }
 
         btnContinue.setOnClickListener(v -> {
             SoundManager.playClick(this);
-
             if(currentIndex == quizList.size() - 1){
                 endQuizTime = System.currentTimeMillis();
                 boolean isPerfect = correctAnswer == quizList.size();
                 ScoreActivity.addXP(this, earnedSessionXP, isPerfect, "family", correctAnswer * 10);
-
                 Intent intent = new Intent(StudyActivity.this, ResultActivity.class);
                 intent.putExtra("score", correctAnswer);
                 intent.putExtra("total", quizList.size());
@@ -524,29 +460,20 @@ public class StudyActivity extends AppCompatActivity {
 
     }
 
-
     // SPEECH RECOGNIZER
 
     private void setupSpeechRecognizer(){
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-        speechIntent.putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        );
-
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
-
         speechRecognizer.setRecognitionListener(
                 new RecognitionListener() {
                     @Override
                     public void onReadyForSpeech(Bundle params) {
-                        btnMic.setColorFilter(
-                                android.graphics.Color.YELLOW
-                        );
+                        btnMic.setColorFilter(android.graphics.Color.YELLOW);
                     }
-
                     @Override
                     public void onResults(Bundle results) {
                         ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
