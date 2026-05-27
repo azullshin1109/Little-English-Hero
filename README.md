@@ -2,7 +2,6 @@
 
 <p align="center">
   <img src="./images/LittleEnglishHero_Logo.png" width="180"/>
-  <img src="https://media.tenor.com/WXb1C8j87h0AAAAi/cute-bounce.gif" width="120"/>
 </p>
 
 <p align="center">
@@ -72,7 +71,7 @@ Little English Hero là ứng dụng giáo dục trên nền tảng Android hỗ
 <p align="center">
     <img src="./images/LittleEnglishHero_Splash.jpg" width="30%"/>
     <img src="./images/LittleEnglishHero_Login.jpg" width="30%"/>
-    <img src="./images/LittleEnglishHero_Choose.jpg.jpg" width="30%"/>
+    <img src="./images/LittleEnglishHero_ChooseAT.jpg" width="30%"/>
 </p>
 
 ---
