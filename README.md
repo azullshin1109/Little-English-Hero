@@ -2,6 +2,7 @@
 
 <p align="center">
   <img src="./images/LittleEnglishHero_Logo.png" width="180"/>
+  <img src="https://media.tenor.com/WXb1C8j87h0AAAAi/cute-bounce.gif" width="120"/>
 </p>
 
 <p align="center">
@@ -16,8 +17,7 @@
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white"/>
   <img src="https://img.shields.io/badge/Language-Java-orange?logo=openjdk&logoColor=white"/>
   <img src="https://img.shields.io/badge/Backend-Firebase-yellow?logo=firebase&logoColor=black"/>
-  <img src="https://img.shields.io/badge/Database-Cloud%20Firestore-FFA000?logo=firebase&logoColor=white"/>
-  <img src="https://img.shields.io/badge/SQLite-07405E?logo=sqlite&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Database-Multi%20Layer-4CAF50"/>
   <img src="https://img.shields.io/badge/UI-XML-blue"/>
 </p>
 
@@ -72,6 +72,7 @@ Little English Hero là ứng dụng giáo dục trên nền tảng Android hỗ
 <p align="center">
     <img src="./images/LittleEnglishHero_Splash.jpg" width="30%"/>
     <img src="./images/LittleEnglishHero_Login.jpg" width="30%"/>
+    <img src="./images/LittleEnglishHero_Choose.jpg.jpg" width="30%"/>
 </p>
 
 ---
@@ -86,7 +87,7 @@ Little English Hero là ứng dụng giáo dục trên nền tảng Android hỗ
 
 ---
 
-## 📚 Màn hình bài học
+## 📚 Màn hình các bài học, flashcard và thông báo
 
 <p align="center">
     <img src="./images/LittleEnglishHero_Learn.jpg" width="30%"/>
@@ -96,7 +97,7 @@ Little English Hero là ứng dụng giáo dục trên nền tảng Android hỗ
 
 ---
 
-## 🧩 Màn hình Quiz và kết quả
+## 🧩 Màn hình Quiz translate, images và kết quả
 
 <p align="center">
     <img src="./images/LittleEnglishHero_Img.jpg" width="30%"/>
