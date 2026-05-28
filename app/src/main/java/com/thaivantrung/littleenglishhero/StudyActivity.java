@@ -78,6 +78,7 @@ public class StudyActivity extends AppCompatActivity {
     ArrayList<VocabularyModel> quizList;
 
     int currentIndex = 0;
+    int lessonId;
     int currentXP = 0;
     int earnedSessionXP = 0;
     int scrose = 0;
@@ -96,7 +97,7 @@ public class StudyActivity extends AppCompatActivity {
         frameContent = findViewById(R.id.frameContent);
         // DATABASE
         DBHelper dbHelper = new DBHelper(this);
-        int lessonId = getIntent().getIntExtra("lessonId", 1);
+        lessonId = getIntent().getIntExtra("lessonId", 1);
         startQuizOnly = getIntent().getBooleanExtra("startQuizOnly", false);
         list = dbHelper.getVocabularyByLesson(lessonId);
 
@@ -175,15 +176,10 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void showFinishFlashcard(){
-
         frameContent.removeAllViews();
-
         View view = getLayoutInflater().inflate(R.layout.view_finish_flashcard, null);
-
         frameContent.addView(view);
-
         Button btnStartQuiz = view.findViewById(R.id.btnStartQuiz);
-
         btnStartQuiz.setOnClickListener(v -> {
             showRandomQuiz();
         });
@@ -266,17 +262,32 @@ public class StudyActivity extends AppCompatActivity {
 
     private void loadQuizTranslate(){
         resetAnswerButtons();
-
         VocabularyModel vocab = quizList.get(currentIndex);
-        tvQuestionWord.setText(vocab.getMeaning());
+        boolean isViToEn = new Random().nextBoolean();
+        String question;
+        String correctAnswerText;
+
+        if(isViToEn){
+            question = vocab.getMeaning();
+            correctAnswerText = vocab.getWord();
+            tvSpeechBubble.setText("Chọn từ tiếng Anh đúng!");
+        } else {
+            question = vocab.getWord();
+            correctAnswerText = vocab.getMeaning();
+            tvSpeechBubble.setText("Chọn nghĩa tiếng Việt đúng!");
+        }
+        tvQuestionWord.setText(question);
         ArrayList<String> answers = new ArrayList<>();
-        answers.add(vocab.getWord());
+        answers.add(correctAnswerText);
+
         while(answers.size() < 4){
             VocabularyModel randomVocab = list.get(new Random().nextInt(list.size()));
-            if(!answers.contains(randomVocab.getWord())){
-                answers.add(randomVocab.getWord());
+            String option = isViToEn ? randomVocab.getWord() : randomVocab.getMeaning();
+            if(!answers.contains(option)){
+                answers.add(option);
             }
         }
+
         Collections.shuffle(answers);
 
         btnAnswer1.setText(answers.get(0));
@@ -284,15 +295,11 @@ public class StudyActivity extends AppCompatActivity {
         btnAnswer3.setText(answers.get(2));
         btnAnswer4.setText(answers.get(3));
 
-        btnAnswer1.setOnClickListener(v ->
-                checkAnswer(btnAnswer1, vocab));
-        btnAnswer2.setOnClickListener(v ->
-                checkAnswer(btnAnswer2, vocab));
-        btnAnswer3.setOnClickListener(v ->
-                checkAnswer(btnAnswer3, vocab));
-        btnAnswer4.setOnClickListener(v ->
-                checkAnswer(btnAnswer4, vocab));
-        tvSpeechBubble.setText("Chọn nghĩa đúng cho từ này nhé!");
+        btnAnswer1.setOnClickListener(v -> checkAnswer(btnAnswer1, vocab, isViToEn));
+        btnAnswer2.setOnClickListener(v -> checkAnswer(btnAnswer2, vocab, isViToEn));
+        btnAnswer3.setOnClickListener(v -> checkAnswer(btnAnswer3, vocab, isViToEn));
+        btnAnswer4.setOnClickListener(v -> checkAnswer(btnAnswer4, vocab, isViToEn));
+
         updateQuizProgress();
     }
 
@@ -348,14 +355,10 @@ public class StudyActivity extends AppCompatActivity {
         btnAnswer3.setText(answers.get(2));
         btnAnswer4.setText(answers.get(3));
 
-        btnAnswer1.setOnClickListener(v ->
-                checkAnswer(btnAnswer1, vocab));
-        btnAnswer2.setOnClickListener(v ->
-                checkAnswer(btnAnswer2, vocab));
-        btnAnswer3.setOnClickListener(v ->
-                checkAnswer(btnAnswer3, vocab));
-        btnAnswer4.setOnClickListener(v ->
-                checkAnswer(btnAnswer4, vocab));
+        btnAnswer1.setOnClickListener(v -> checkAnswer(btnAnswer1, vocab, true));
+        btnAnswer2.setOnClickListener(v -> checkAnswer(btnAnswer2, vocab, true));
+        btnAnswer3.setOnClickListener(v -> checkAnswer(btnAnswer3, vocab, true));
+        btnAnswer4.setOnClickListener(v -> checkAnswer(btnAnswer4, vocab, true));
         tvQuestionPrompt.setText("Hình này tiếng Anh là gì?");
         updateQuizProgress();
 
@@ -377,9 +380,13 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     // CHECK ANSWER
-    private void checkAnswer(Button selectedBtn, VocabularyModel vocab) {
+    private void checkAnswer(Button selectedBtn, VocabularyModel vocab, boolean isViToEn) {
+
+        String correct = isViToEn ? vocab.getWord() : vocab.getMeaning();
         String selectedAnswer = selectedBtn.getText().toString();
-        boolean isCorrect = selectedAnswer.equals(vocab.getWord());
+
+        boolean isCorrect = selectedAnswer.equals(correct);
+
         btnAnswer1.setEnabled(false);
         btnAnswer2.setEnabled(false);
         btnAnswer3.setEnabled(false);
@@ -398,40 +405,55 @@ public class StudyActivity extends AppCompatActivity {
             selectedBtn.setBackgroundResource(R.drawable.bg_avatar_selected);
             scrose++;
             correctAnswer++;
+
             int earnedXP = isImageQuiz ? 15 : 10;
             currentXP += earnedXP;
             earnedSessionXP += earnedXP;
+
             tvXP.setText(currentXP + " XP");
             tvXPEarned.setText("+" + earnedXP + " XP");
 
             tvFeedbackTitle.setText("Xuất sắc!");
             tvFeedbackTitle.setTextColor(getResources().getColor(R.color.correct));
             feedbackPanel.setBackgroundResource(R.drawable.bg_feedback_correct);
-            tvFeedbackSub.setText(vocab.getMeaning() + " = " + vocab.getWord());
+
+            if(isViToEn){
+                tvFeedbackSub.setText(vocab.getMeaning() + " = " + vocab.getWord());
+            } else {
+                tvFeedbackSub.setText(vocab.getWord() + " = " + vocab.getMeaning());
+            }
 
             SoundManager.playCorrect(this);
+
         } else {
             selectedBtn.setBackgroundResource(R.drawable.bg_btn_wrong);
-            if (btnAnswer1.getText().toString().equals(vocab.getWord())) btnAnswer1.setBackgroundResource(R.drawable.bg_avatar_selected);
-            if (btnAnswer2.getText().toString().equals(vocab.getWord())) btnAnswer2.setBackgroundResource(R.drawable.bg_avatar_selected);
-            if (btnAnswer3.getText().toString().equals(vocab.getWord())) btnAnswer3.setBackgroundResource(R.drawable.bg_avatar_selected);
-            if (btnAnswer4.getText().toString().equals(vocab.getWord())) btnAnswer4.setBackgroundResource(R.drawable.bg_avatar_selected);
+
+            if (btnAnswer1.getText().toString().equals(correct)) btnAnswer1.setBackgroundResource(R.drawable.bg_avatar_selected);
+            if (btnAnswer2.getText().toString().equals(correct)) btnAnswer2.setBackgroundResource(R.drawable.bg_avatar_selected);
+            if (btnAnswer3.getText().toString().equals(correct)) btnAnswer3.setBackgroundResource(R.drawable.bg_avatar_selected);
+            if (btnAnswer4.getText().toString().equals(correct)) btnAnswer4.setBackgroundResource(R.drawable.bg_avatar_selected);
 
             tvFeedbackTitle.setText("Sai rồi!");
             tvFeedbackTitle.setTextColor(android.graphics.Color.RED);
             feedbackPanel.setBackgroundResource(R.drawable.bg_btn_wrong);
-            tvFeedbackSub.setText("Đáp án đúng là " + vocab.getWord());
+
+            tvFeedbackSub.setText("Đáp án đúng là " + correct);
             tvXPEarned.setText("+0 XP");
+
             SoundManager.playWrong(this);
         }
 
         btnContinue.setOnClickListener(v -> {
             SoundManager.playClick(this);
+
             if(currentIndex == quizList.size() - 1){
                 endQuizTime = System.currentTimeMillis();
                 boolean isPerfect = correctAnswer == quizList.size();
+
                 ScoreActivity.addXP(this, earnedSessionXP, isPerfect, "family", correctAnswer * 10);
+
                 Intent intent = new Intent(StudyActivity.this, ResultActivity.class);
+                intent.putExtra("lessonId", lessonId);
                 intent.putExtra("score", correctAnswer);
                 intent.putExtra("total", quizList.size());
                 intent.putExtra("time", endQuizTime - startQuizTime);
@@ -443,7 +465,6 @@ public class StudyActivity extends AppCompatActivity {
             }
         });
     }
-
     // PROGRESS
     private void updateQuizProgress(){
 
@@ -478,7 +499,7 @@ public class StudyActivity extends AppCompatActivity {
                     public void onResults(Bundle results) {
                         ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                         if(data != null && data.size() > 0){
-                            String answer = list.get(currentIndex).getWord().toLowerCase();
+                            String answer = quizList.get(currentIndex).getWord().toLowerCase();
                             boolean isCorrect = false;
                             for(String text : data){
                                 String spokenText = text.toLowerCase();
