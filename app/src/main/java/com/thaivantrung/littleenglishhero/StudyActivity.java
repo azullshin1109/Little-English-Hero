@@ -2,7 +2,6 @@ package com.thaivantrung.littleenglishhero;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -10,8 +9,6 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,6 +55,7 @@ public class StudyActivity extends AppCompatActivity {
     Button btnAnswer3;
     Button btnAnswer4;
 
+
     Button btnContinue;
 
     LinearLayout feedbackPanel;
@@ -69,6 +67,7 @@ public class StudyActivity extends AppCompatActivity {
 
     // SPEECH
     TextToSpeech textToSpeech;
+    TextView tvSpeechResult;
 
     SpeechRecognizer speechRecognizer;
     Intent speechIntent;
@@ -146,7 +145,7 @@ public class StudyActivity extends AppCompatActivity {
         // SPEECH
         setupSpeechRecognizer();
 
-        // PERMISSION
+        // QUyen mĩc
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO
         ) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
@@ -172,10 +171,13 @@ public class StudyActivity extends AppCompatActivity {
         btnMic = view.findViewById(R.id.btnMic);
         btnNext = view.findViewById(R.id.btnNext);
 
+        tvSpeechResult = view.findViewById(R.id.tvSpeechResult);
+
         progressWord = view.findViewById(R.id.progressWord);
     }
 
     private void showFinishFlashcard(){
+        //xoa  giao dien flashcard
         frameContent.removeAllViews();
         View view = getLayoutInflater().inflate(R.layout.view_finish_flashcard, null);
         frameContent.addView(view);
@@ -186,6 +188,7 @@ public class StudyActivity extends AppCompatActivity {
     }
     private void loadWord(){
         btnMic.clearColorFilter();
+        tvSpeechResult.setVisibility(View.GONE);
         VocabularyModel vocab = list.get(currentIndex);
 
         txtEnglish.setText(vocab.getWord());
@@ -230,7 +233,6 @@ public class StudyActivity extends AppCompatActivity {
     // QUIZ TRANSLATE
     private void showQuizTranslate(){
         frameContent.removeAllViews();
-
         View view = getLayoutInflater().inflate(R.layout.item_quiz_translate, null);
         ImageView btnBack = view.findViewById(R.id.btn_back_translate);
         btnBack.setOnClickListener(v -> finish());
@@ -486,7 +488,6 @@ public class StudyActivity extends AppCompatActivity {
     private void setupSpeechRecognizer(){
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
         speechRecognizer.setRecognitionListener(
@@ -499,11 +500,22 @@ public class StudyActivity extends AppCompatActivity {
                     public void onResults(Bundle results) {
                         ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                         if(data != null && data.size() > 0){
-                            String answer = quizList.get(currentIndex).getWord().toLowerCase();
+                            String recognizedText = data.get(0);
+                            tvSpeechResult.setVisibility(View.VISIBLE);
+                            String displayText = recognizedText.substring(0,1).toUpperCase()
+                                            + recognizedText.substring(1).toLowerCase();
+
+                            tvSpeechResult.setText(
+                                    "Bạn nói: " + displayText
+                            );
+                            String answer = list.get(currentIndex)
+                                            .getWord()
+                                            .toLowerCase()
+                                            .trim();
                             boolean isCorrect = false;
                             for(String text : data){
-                                String spokenText = text.toLowerCase();
-                                if(spokenText.equals(answer) || spokenText.contains(answer)){
+                                String spoken = text.toLowerCase().trim();
+                                if(spoken.equals(answer) || spoken.contains(answer)){
                                     isCorrect = true;
                                     break;
                                 }
@@ -546,8 +558,6 @@ public class StudyActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        MusicManager.resumeMusic();
-
     }
 
     // DESTROY

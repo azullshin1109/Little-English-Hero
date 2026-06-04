@@ -173,11 +173,24 @@ public class MainMenuActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
         int totalXP = prefs.getInt("total_xp", 0);
         int streak = prefs.getInt("streak", 0);
-        int level = (totalXP / 100) + 1;
-        int currentLevelXP = totalXP % 100;
-        progressXP.setMax(100);
+
+        // LEVEL
+        int level = 1;
+        int xpNeed = 100;
+        int remainXP = totalXP;
+
+        while(remainXP >= xpNeed){
+            remainXP -= xpNeed;
+            level++;
+            xpNeed += 100;
+        }
+
+        int currentLevelXP = remainXP;
+
+        progressXP.setMax(xpNeed);
         progressXP.setProgress(currentLevelXP);
-        txtXP.setText(currentLevelXP + " / 100 XP");
+
+        txtXP.setText(currentLevelXP + " / " + xpNeed + " XP");
         txtLevel.setText("Level " + level);
 
         // STREAK

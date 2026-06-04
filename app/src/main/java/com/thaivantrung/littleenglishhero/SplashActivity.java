@@ -33,7 +33,9 @@ public class SplashActivity extends AppCompatActivity {
         MusicManager.playMusic(this);
 
         ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, 100);
-        animation.setDuration(6000);
+        // 8 giây
+        animation.setDuration(30000);
+
         animation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

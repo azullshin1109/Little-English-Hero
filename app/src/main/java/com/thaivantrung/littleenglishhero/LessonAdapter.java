@@ -35,7 +35,6 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         holder.imgLesson.setImageResource(lesson.getImage());
         holder.txtLesson.setText(lesson.getLesson());
         holder.txtTitle.setText(lesson.getTitle());
-        holder.txtActivity.setText(lesson.getActivity());
 
         // CLICK ITEM
         holder.itemView.setOnClickListener(v -> {
@@ -59,13 +58,12 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgLesson;
-        TextView txtLesson, txtTitle, txtActivity;
+        TextView txtLesson, txtTitle;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgLesson = itemView.findViewById(R.id.imgLesson);
             txtLesson = itemView.findViewById(R.id.txtLesson);
             txtTitle = itemView.findViewById(R.id.txtTitle);
-            txtActivity = itemView.findViewById(R.id.txtActivity);
         }
     }
 }

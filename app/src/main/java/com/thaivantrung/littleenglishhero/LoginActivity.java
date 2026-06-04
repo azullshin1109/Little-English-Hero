@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = getEmail();
         String password = getPassword();
         if (!isValidInput(email, password)) return;
+        //Xac thuc tk dang nhap
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -157,8 +158,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(String token) {
         AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
+        auth.signInWithCredential(credential).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         showToast("Đăng nhập Google thành công");
                         checkUser();

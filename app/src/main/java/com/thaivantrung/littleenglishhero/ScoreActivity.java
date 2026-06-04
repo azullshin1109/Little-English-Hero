@@ -105,9 +105,19 @@ public class ScoreActivity extends AppCompatActivity {
         int lessonsDone = prefs.getInt("lessons_done", 0);
 
         // LEVEL
-        int level = (xp / 100) + 1;
-        int currentXP = xp % 100;
-        int needXP = 100 - currentXP;
+        int level = 1;
+        int xpNeed = 100;
+        int remainXP = xp;
+
+        while(remainXP >= xpNeed){
+            remainXP -= xpNeed;
+            level++;
+            xpNeed += 100;
+        }
+
+        int currentXP = remainXP;
+        int nextLevelXP = xpNeed;
+        int needXP = nextLevelXP - currentXP;
 
         //TEXT
         tvXP.setText(String.valueOf(xp));
@@ -117,17 +127,38 @@ public class ScoreActivity extends AppCompatActivity {
         tvLevel.setText(String.valueOf(level));
 
         // LEVEL TEXT
-        tvNextLevel.setText("Cần " + needXP + " để lên Nâng cấp!");
-        tvCurrentXP.setText(currentXP + " / 100 XP");
+        tvNextLevel.setText("Cần " + needXP + " XP để lên cấp!");
+        tvCurrentXP.setText(currentXP + " / " + nextLevelXP + " XP");
         tvLevelLeft.setText("Level " + level);
         tvLevelRight.setText("Level " + (level + 1));
 
         // PROGRESS BAR
-        progressXP.setMax(100);
+        progressXP.setMax(nextLevelXP);
         progressXP.setProgress(currentXP);
 
         //STREAK
         int streak = prefs.getInt("streak", 0);
+
+        String lastStudyDate = prefs.getString("last_study_date", "");
+
+        try {
+            if(!lastStudyDate.equals("")){
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                Calendar lastCal = Calendar.getInstance();
+                lastCal.setTime(sdf.parse(lastStudyDate));
+                Calendar todayCal = Calendar.getInstance();
+                long diff = todayCal.getTimeInMillis() - lastCal.getTimeInMillis();
+                long days = diff / (1000 * 60 * 60 * 24);
+                if(days > 1){
+                    streak = 0;
+                    prefs.edit().putInt("streak", 0).apply();
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         if(streak <= 0){
             tvStreak.setText("Chưa học bài nào!");
         }
@@ -214,8 +245,11 @@ public class ScoreActivity extends AppCompatActivity {
         if(lessonType.equals("animals")) {
             editor.putInt("animals_score", lessonScore);
         }
+
         String lastStudyDate = prefs.getString("last_study_date", "");
-        String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Calendar.getInstance().getTime());
+        String today = new SimpleDateFormat("dd/MM/yyyy",
+                Locale.getDefault())
+                .format(Calendar.getInstance().getTime());
         int streak = prefs.getInt("streak", 0);
         try {
             if(lastStudyDate.equals("")){
@@ -229,15 +263,12 @@ public class ScoreActivity extends AppCompatActivity {
                 Calendar todayCal = Calendar.getInstance();
                 long diff = todayCal.getTimeInMillis() - lastCal.getTimeInMillis();
                 long days = diff / (1000 * 60 * 60 * 24);
-
                 if(days == 1){
                     streak++;
                 }
-
                 else if(days > 1){
                     streak = 1;
                 }
-
                 else if(days == 0){
                 }
             }
@@ -254,7 +285,9 @@ public class ScoreActivity extends AppCompatActivity {
         if (user != null) {
             String uid = user.getUid();
             com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+
             java.util.Map<String, Object> progressData = new java.util.HashMap<>();
+
             progressData.put("total_xp", prefs.getInt("total_xp", 0));
             progressData.put("quiz_correct", prefs.getInt("quiz_correct", 0));
             progressData.put("perfect_quiz", prefs.getInt("perfect_quiz", 0));
@@ -271,7 +304,10 @@ public class ScoreActivity extends AppCompatActivity {
             progressData.put("colors_perfect", prefs.getBoolean("colors_perfect", false));
             progressData.put("numbers_perfect", prefs.getBoolean("numbers_perfect", false));
 
-            db.collection("users").document(uid).set(progressData, com.google.firebase.firestore.SetOptions.merge());
+            db.collection("users")
+                    .document(uid).set(progressData,
+                            com.google.firebase.firestore
+                                    .SetOptions.merge());
         }
     }
 }
