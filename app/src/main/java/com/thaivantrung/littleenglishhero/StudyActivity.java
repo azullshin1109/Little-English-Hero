@@ -307,12 +307,13 @@ public class StudyActivity extends AppCompatActivity {
 
     // QUIZ IMAGE
     private void showQuizImage(){
-
+        // Frame Layout: xóa layout cũ
         frameContent.removeAllViews();
         View view = getLayoutInflater().inflate(R.layout.item_quiz_image, null);
         ImageView btnBack = view.findViewById(R.id.btn_back_image);
         btnBack.setOnClickListener(v -> finish());
 
+        //Thêm layout mới
         frameContent.addView(view);
 
         tvQuestionImage = view.findViewById(R.id.tv_question_image);
@@ -343,14 +344,21 @@ public class StudyActivity extends AppCompatActivity {
         VocabularyModel vocab = quizList.get(currentIndex);
         int imageId = getResources().getIdentifier(vocab.getImage(), "drawable", getPackageName());
         tvQuestionImage.setImageResource(imageId);
+
+        //Tạp danh sách đáp án
         ArrayList<String> answers = new ArrayList<>();
         answers.add(vocab.getWord());
+        // Dùng vòng lặp while để đi tìm 3 đáp án sai.
         while(answers.size() < 4){
+            // Lấy ngẫu nhiên một từ vựng bất kỳ từ kho từ vựng tổng (list)
             VocabularyModel randomVocab = list.get(new Random().nextInt(list.size()));
+            //Kiem tra tu vung trong ds dáp án
             if(!answers.contains(randomVocab.getWord())){
                 answers.add(randomVocab.getWord());
             }
         }
+
+         //Xáo trộn và hiển thị đáp án
         Collections.shuffle(answers);
         btnAnswer1.setText(answers.get(0));
         btnAnswer2.setText(answers.get(1));
@@ -389,6 +397,7 @@ public class StudyActivity extends AppCompatActivity {
 
         boolean isCorrect = selectedAnswer.equals(correct);
 
+        // Tạm dừng chọn đáp án
         btnAnswer1.setEnabled(false);
         btnAnswer2.setEnabled(false);
         btnAnswer3.setEnabled(false);
@@ -486,47 +495,80 @@ public class StudyActivity extends AppCompatActivity {
     // SPEECH RECOGNIZER
 
     private void setupSpeechRecognizer(){
+        // Khởi tạo SpeechRecognizer (bộ nhận diện giọng nói)
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+
+        // Tạo Intent để cấu hình chức năng nhận diện giọng nói
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+
+        // Chọn kiểu nhận diện giọng nói dạng tự do
+        speechIntent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        );
+
+        // Đặt ngôn ngữ nhận diện là tiếng Anh Mỹ
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
+
+        // Gắn listener để lắng nghe các trạng thái của SpeechRecognizer
         speechRecognizer.setRecognitionListener(
                 new RecognitionListener() {
                     @Override
                     public void onReadyForSpeech(Bundle params) {
+                        // Khi bắt đầu sẵn sàng nghe -> đổi màu mic sang vàng
                         btnMic.setColorFilter(android.graphics.Color.YELLOW);
                     }
+
                     @Override
                     public void onResults(Bundle results) {
+
+                        // Lấy danh sách các kết quả nhận diện giọng nói
                         ArrayList<String> data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                        if(data != null && data.size() > 0){
+
+                        // Kiểm tra dữ liệu có tồn tại không
+                        if (data != null && data.size() > 0) {
+
+                            // Lấy kết quả chính xác nhất (vị trí 0)
                             String recognizedText = data.get(0);
+
+                            // Hiển thị text lên màn hình
                             tvSpeechResult.setVisibility(View.VISIBLE);
-                            String displayText = recognizedText.substring(0,1).toUpperCase()
+
+                            // Chuẩn hóa chữ: viết hoa chữ đầu, còn lại viết thường
+                            String displayText = recognizedText.substring(0, 1).toUpperCase()
                                             + recognizedText.substring(1).toLowerCase();
 
-                            tvSpeechResult.setText(
-                                    "Bạn nói: " + displayText
-                            );
+                            // Gán nội dung người dùng vừa nói lên TextView
+                            tvSpeechResult.setText("Bạn nói: " + displayText);
+
+                            // Lấy từ đúng cần học trong danh sách bài học hiện tại
                             String answer = list.get(currentIndex)
-                                            .getWord()
-                                            .toLowerCase()
-                                            .trim();
+                                    .getWord()
+                                    .toLowerCase()
+                                    .trim();
+
+                            // Biến kiểm tra đúng/sai
                             boolean isCorrect = false;
-                            for(String text : data){
+
+                            // Duyệt toàn bộ kết quả nhận diện để so sánh
+                            for (String text : data) {
+
+                                // Chuyển sang tất cả các chữ về chưc thường
                                 String spoken = text.toLowerCase().trim();
-                                if(spoken.equals(answer) || spoken.contains(answer)){
+                                // So sánh: đúng nếu trùng hoặc có chứa từ cần học
+                                if (spoken.equals(answer) || spoken.contains(answer)) {
                                     isCorrect = true;
                                     break;
                                 }
                             }
-
-                            if(isCorrect){
-                                btnMic.setColorFilter(android.graphics.Color.GREEN);
-                                SoundManager.playCorrect(StudyActivity.this);
+                            //So sánh phát âm
+                            // Nếu phát âm đúng
+                            if (isCorrect) {
+                                btnMic.setColorFilter(android.graphics.Color.GREEN); // xanh
+                                SoundManager.playCorrect(StudyActivity.this); // âm đúng
                             } else {
-                                btnMic.setColorFilter(android.graphics.Color.RED);
-                                SoundManager.playWrong(StudyActivity.this);
+                                btnMic.setColorFilter(android.graphics.Color.RED); // đỏ
+                                SoundManager.playWrong(StudyActivity.this); // âm sai
                             }
                         }
                     }

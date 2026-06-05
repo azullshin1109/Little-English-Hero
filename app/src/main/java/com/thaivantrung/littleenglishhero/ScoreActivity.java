@@ -59,7 +59,7 @@ public class ScoreActivity extends AppCompatActivity {
         checkBadge();
 
         btnBack.setOnClickListener(v -> {
-                SoundManager.playClick(this);
+            SoundManager.playClick(this);
             startActivity(new Intent(ScoreActivity.this, MainMenuActivity.class));
             finish();
         });
@@ -104,15 +104,15 @@ public class ScoreActivity extends AppCompatActivity {
         int perfectQuiz = prefs.getInt("perfect_quiz", 0);
         int lessonsDone = prefs.getInt("lessons_done", 0);
 
-        // LEVEL
+        // Tính level dựa trên tổng XP
         int level = 1;
-        int xpNeed = 100;
+        int xpNeed = 100;   // XP cần để lên level đầu tiên
         int remainXP = xp;
 
         while(remainXP >= xpNeed){
-            remainXP -= xpNeed;
-            level++;
-            xpNeed += 100;
+            remainXP -= xpNeed;  // trừ XP đã dùng để lên level
+            level++;             // tăng level
+            xpNeed += 100;       // level sau cần nhiều XP hơn
         }
 
         int currentXP = remainXP;
@@ -139,32 +139,42 @@ public class ScoreActivity extends AppCompatActivity {
         //STREAK
         int streak = prefs.getInt("streak", 0);
 
-        String lastStudyDate = prefs.getString("last_study_date", "");
-
-        try {
-            if(!lastStudyDate.equals("")){
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                Calendar lastCal = Calendar.getInstance();
-                lastCal.setTime(sdf.parse(lastStudyDate));
-                Calendar todayCal = Calendar.getInstance();
-                long diff = todayCal.getTimeInMillis() - lastCal.getTimeInMillis();
-                long days = diff / (1000 * 60 * 60 * 24);
-                if(days > 1){
-                    streak = 0;
-                    prefs.edit().putInt("streak", 0).apply();
-                }
-            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
+        // Cập nhật giao diện Streak
         if(streak <= 0){
             tvStreak.setText("Chưa học bài nào!");
         }
         else{
             tvStreak.setText(streak + " Days");
         }
+    }
+
+    // STREAK
+    private static int calculateStreak(SharedPreferences prefs){
+        // Lấy ngày học cuối cùng được lưu trong máy.
+        String lastStudyDate = prefs.getString("last_study_date", "");
+        if (lastStudyDate.equals("")) return 1;
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            Calendar lastCal = Calendar.getInstance();
+            lastCal.setTime(sdf.parse(lastStudyDate));
+            Calendar todayCal = Calendar.getInstance();
+            //Kiêm tra ngay gần nhất
+            // Lấy thời điểm hiện tại trừ đi thời điểm học lần trước
+            long diff = todayCal.getTimeInMillis() - lastCal.getTimeInMillis();
+            long days = diff / (1000 * 60 * 60 * 24);
+
+            int streak = prefs.getInt("streak", 0);
+
+            if (days == 1) return streak + 1; // đúng 1 +
+            else if (days > 1) return 1;// lớn hơn 1 chuỗi về 0
+            else return streak; // giữ nguyên chuỗi
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 1;
     }
 
     // BADGE
@@ -246,35 +256,11 @@ public class ScoreActivity extends AppCompatActivity {
             editor.putInt("animals_score", lessonScore);
         }
 
-        String lastStudyDate = prefs.getString("last_study_date", "");
         String today = new SimpleDateFormat("dd/MM/yyyy",
                 Locale.getDefault())
                 .format(Calendar.getInstance().getTime());
-        int streak = prefs.getInt("streak", 0);
-        try {
-            if(lastStudyDate.equals("")){
-                streak = 1;
-            }
 
-            else {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                Calendar lastCal = Calendar.getInstance();
-                lastCal.setTime(sdf.parse(lastStudyDate));
-                Calendar todayCal = Calendar.getInstance();
-                long diff = todayCal.getTimeInMillis() - lastCal.getTimeInMillis();
-                long days = diff / (1000 * 60 * 60 * 24);
-                if(days == 1){
-                    streak++;
-                }
-                else if(days > 1){
-                    streak = 1;
-                }
-                else if(days == 0){
-                }
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        int streak = calculateStreak(prefs);
 
         editor.putInt("streak", streak);
         editor.putString("last_study_date", today);
