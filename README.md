@@ -23,9 +23,7 @@
 
 ## 🎥 Video Demo
 
-[![Xem Video Demo](https://drive.google.com/drive/u/0/folders/1qNMgUfDctc3kQ-SSKtNCVFCF3Voi28eu)]
-
----
+👉 **[Nhấn vào đây để xem Video Demo](https://drive.google.com/drive/u/0/folders/1qNMgUfDctc3kQ-SSKtNCVFCF3Voi28eu)**
 
 # ✨ Giới thiệu
 
