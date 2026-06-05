@@ -223,8 +223,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void saveUserToPreferences(
-            DocumentSnapshot document) {
+    private void saveUserToPreferences(DocumentSnapshot document) {
         SharedPreferences prefs = getSharedPreferences("LEH_DATA", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         String name = document.getString("name");

@@ -34,7 +34,7 @@ public class SplashActivity extends AppCompatActivity {
 
         ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, 100);
         // 8 giây
-        animation.setDuration(30000);
+        animation.setDuration(8000);
 
         animation.addListener(new AnimatorListenerAdapter() {
             @Override
